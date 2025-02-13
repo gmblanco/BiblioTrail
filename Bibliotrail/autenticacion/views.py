@@ -1,9 +1,11 @@
 # views.py
 from django.shortcuts import redirect, render
 from django.views.generic import View
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from .forms import RegistroForm
+from django.contrib.auth.forms import AuthenticationForm
+from .forms import LoginForm
 
 class VistaRegistro(View):
     def get(self, request):
@@ -32,3 +34,25 @@ class VistaRegistro(View):
 def cerrar_sesion(request):
     logout(request)
     return redirect("Inicio")
+
+def iniciar_sesion(request):
+    if request.method == "POST":
+        form = LoginForm(request, data=request.POST)  # Usa tu formulario personalizado
+        if form.is_valid():
+            username = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password")
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect("Inicio")
+            else:
+                messages.error(request, "Nombre de usuario o contraseña incorrectos.")
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")  # Mensajes más específicos
+
+    else:
+        form = LoginForm()
+
+    return render(request, "login/login.html", {"form": form})
