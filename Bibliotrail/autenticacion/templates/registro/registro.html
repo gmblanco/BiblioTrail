@@ -9,94 +9,114 @@
             <h2 class="text-center mb-3" style="color: #6595f0;">Crear una cuenta</h2>
             <p class="text-center text-muted">Completa el formulario para registrarte</p>
 
+            <!-- Mostrar errores generales del formulario -->
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
             <form class="row g-3" method="post">
                 {% csrf_token %}
               
                 <!-- Sección de Creación de Usuario -->
                 <div class="col-md-6">
-                  <label for="id_username" class="form-label">Nombre de usuario</label>
-                  <input type="text" class="form-control" id="id_username" name="username" required>
+                    <label for="id_username" class="form-label">Nombre de usuario</label>
+                    <input type="text" class="form-control" id="id_username" name="username" required>
+                    <div class="text-danger">{{ form.username.errors }}</div>
                 </div>
-              
+
                 <div class="col-md-6">
-                  <label for="id_email" class="form-label">Correo electrónico</label>
-                  <input type="email" class="form-control" id="id_email" name="email" required>
+                    <label for="id_email" class="form-label">Correo electrónico</label>
+                    <input type="email" class="form-control" id="id_email" name="email" required>
+                    <div class="text-danger">{{ form.email.errors }}</div>
                 </div>
-              
+
                 <div class="col-md-6">
-                  <label for="id_password1" class="form-label">Contraseña</label>
-                  <input type="password" class="form-control" id="id_password1" name="password1" required>
+                    <label for="id_password1" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" id="id_password1" name="password1" required>
+                    <div class="text-danger">{{ form.password1.errors }}</div>
                 </div>
-              
+
                 <div class="col-md-6">
-                  <label for="id_password2" class="form-label">Repetir contraseña</label>
-                  <input type="password" class="form-control" id="id_password2" name="password2" required>
+                    <label for="id_password2" class="form-label">Repetir contraseña</label>
+                    <input type="password" class="form-control" id="id_password2" name="password2" required>
+                    <div class="text-danger">{{ form.password2.errors }}</div>
                 </div>
-              
-                <!-- Separador entre Creación de Usuario y Datos Personales -->
+
+                <!-- Separador -->
                 <div class="col-12 my-3" style="border-top: 2px solid #6595f0;"></div>
-              
+
                 <!-- Sección de Información Personal -->
                 <div class="col-md-6">
-                  <label for="id_nombre" class="form-label">Nombre</label>
-                  <input type="text" class="form-control" id="id_nombre" name="nombre" required>
-                </div>
-              
-                <div class="col-md-6">
-                  <label for="id_apellidos" class="form-label">Apellidos</label>
-                  <input type="text" class="form-control" id="id_apellidos" name="apellidos" required>
-                </div>
-              
-                <div class="col-md-6">
-                  <label for="id_dni" class="form-label">DNI</label>
-                  <input type="text" class="form-control" id="id_dni" name="dni" required>
-                </div>
-              
-                <div class="col-md-6">
-                  <label for="id_sexo" class="form-label">Sexo</label>
-                  <select class="form-select" id="id_sexo" name="sexo" required>
-                    <option value="M">Hombre</option>
-                    <option value="F">Mujer</option>
-                  </select>
+                    <label for="id_nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="id_nombre" name="nombre" required>
+                    <div class="text-danger">{{ form.nombre.errors }}</div>
                 </div>
 
-                <!-- Separador entre Información Personal y Dirección -->
+                <div class="col-md-6">
+                    <label for="id_apellidos" class="form-label">Apellidos</label>
+                    <input type="text" class="form-control" id="id_apellidos" name="apellidos" required>
+                    <div class="text-danger">{{ form.apellidos.errors }}</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="id_dni" class="form-label">DNI</label>
+                    <input type="text" class="form-control" id="id_dni" name="dni" required>
+                    <div class="text-danger">{{ form.dni.errors }}</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="id_sexo" class="form-label">Sexo</label>
+                    <select class="form-select" id="id_sexo" name="sexo" required>
+                        <option value="M">Hombre</option>
+                        <option value="F">Mujer</option>
+                    </select>
+                    <div class="text-danger">{{ form.sexo.errors }}</div>
+                </div>
+
+                <!-- Separador -->
                 <div class="col-12 my-3" style="border-top: 2px solid #6595f0;"></div>
-              
+
                 <!-- Sección de Dirección -->
                 <div class="col-md-12">
-                  <label for="id_calle" class="form-label">Dirección</label>
-                  <input type="text" class="form-control" id="id_calle" name="calle" placeholder="Ej. Calle Mayor 123" required>
+                    <label for="id_calle" class="form-label">Dirección</label>
+                    <input type="text" class="form-control" id="id_calle" name="calle" required>
+                    <div class="text-danger">{{ form.calle.errors }}</div>
                 </div>
 
                 <div class="col-md-4">
-                  <label for="id_codigo_postal" class="form-label">Código Postal</label>
-                  <input type="text" class="form-control" id="id_codigo_postal" name="codigo_postal" required>
+                    <label for="id_codigo_postal" class="form-label">Código Postal</label>
+                    <input type="text" class="form-control" id="id_codigo_postal" name="codigo_postal" required>
+                    <div class="text-danger">{{ form.codigo_postal.errors }}</div>
                 </div>
-              
+
                 <div class="col-md-4">
-                  <label for="id_provincia" class="form-label">Provincia</label>
-                  <input type="text" class="form-control" id="id_provincia" name="provincia" required>
+                    <label for="id_provincia" class="form-label">Provincia</label>
+                    <input type="text" class="form-control" id="id_provincia" name="provincia" required>
+                    <div class="text-danger">{{ form.provincia.errors }}</div>
                 </div>
-              
+
                 <div class="col-md-4">
-                  <label for="id_ciudad" class="form-label">Ciudad</label>
-                  <input type="text" class="form-control" id="id_ciudad" name="ciudad" required>
+                    <label for="id_ciudad" class="form-label">Ciudad</label>
+                    <input type="text" class="form-control" id="id_ciudad" name="ciudad" required>
+                    <div class="text-danger">{{ form.ciudad.errors }}</div>
                 </div>
-              
+
                 <!-- Sección de Tipo de Usuario -->
                 <div class="col-md-6">
-                  <label for="id_tipo_usuario" class="form-label">Tipo de Usuario</label>
-                  <select class="form-select" id="id_tipo_usuario" name="tipo_usuario" required>
-                    <option value="usuario">Usuario</option>
-                    <option value="bibliotecario">Bibliotecario</option>
-                  </select>
+                    <label for="id_tipo_usuario" class="form-label">Tipo de Usuario</label>
+                    <select class="form-select" id="id_tipo_usuario" name="tipo_usuario" required>
+                        <option value="usuario">Usuario</option>
+                        <option value="bibliotecario">Bibliotecario</option>
+                    </select>
+                    <div class="text-danger">{{ form.tipo_usuario.errors }}</div>
                 </div>
-              
+
                 <div class="col-12">
-                  <button type="submit" class="btn btn-primary" style="background-color: #6595f0;">Registrarse</button>
+                    <button type="submit" class="btn btn-primary" style="background-color: #6595f0;">Registrarse</button>
                 </div>
-              </form>              
+            </form>
         </div>
     </div>
 </div>

@@ -27,9 +27,14 @@ class VistaRegistro(View):
             login(request, usuario)
             return redirect("Inicio")
         else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
+            return render(request, "registro/registro.html", {"form": form})
+            """
             for mensaje in form.error_messages:
                 messages.error(request, form.error_messages[mensaje])
-            return render(request, "registro/registro.html", {"form": form})
+            return render(request, "registro/registro.html", {"form": form})"""
       
 def cerrar_sesion(request):
     logout(request)
