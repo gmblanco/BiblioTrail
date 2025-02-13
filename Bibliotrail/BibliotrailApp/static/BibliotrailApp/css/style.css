@@ -1,0 +1,44 @@
+.navbar-custom {
+    background-color: #6595f0 !important;
+}
+
+.carousel-inner {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+}
+
+.contenedorFormulario{
+    width: 50%;
+    margin: 10px auto;
+    background-color: blue;
+    border-radius: 5px;
+    padding: 1px 0px;
+}
+.navbar-custom .navbar-nav .nav-link {
+    color: white !important; /* Hace que el texto sea blanco */
+}
+
+.navbar-custom .navbar-nav .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2); /* Un fondo blanco semitransparente */
+    border-radius: 5px; /* Bordes redondeados */
+    font-weight: bold; /* Texto en negrita */
+}
+
+
+
+.navbar-custom .navbar-nav .nav-link:hover {
+    color: #dcdcdc !important; /* Un tono gris claro al pasar el mouse */
+}
+
+.custom-search-btn {
+    color: #6595f0; /* Texto azul */
+    background-color: white; /* Fondo blanco */
+    border-color: white; /* Borde blanco */
+}
+
+.custom-search-btn:hover {
+    color: white; /* Texto blanco */
+    background-color: #198754; /* Verde de Bootstrap */
+    border-color: #198754; /* Borde verde */
+}

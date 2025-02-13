@@ -1,0 +1,19 @@
+{% extends "BibliotrailApp/base.html" %}
+
+{% block content %}
+    <h1>Lista de autores</h1>
+
+    {% if autor_list %}
+    <ul>
+
+      {% for autor in autor_list %}
+      <li>
+        <a href="{{ autor.get_absolute_url }}">{{ autor.apellidos }}, {{ autor.nombre }}</a> ({{autor.fecha_nacimiento}} - {{autor.fecha_defuncion}})
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>No hay autores.</p>
+    {% endif %}
+{% endblock %}

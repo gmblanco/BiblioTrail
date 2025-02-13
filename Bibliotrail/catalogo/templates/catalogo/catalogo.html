@@ -1,0 +1,26 @@
+{% extends "BibliotrailApp/base.html" %}
+{% load static %}
+
+{% block title %}
+    <title>Catalogo</title>
+{% endblock %}
+
+{% block content %}
+<h1>Inicio BiblioTrail</h1>
+
+  <p>Bienvenido a <em>BiblioTrail</em>!!</p>
+
+<h2>Dynamic content</h2>
+
+  <p>The library has the following record counts:</p>
+  <ul>
+    <li><strong>Libros:</strong> {{ num_libros }}</li>
+    <li><strong>Copias:</strong> {{ num_ejemplares }}</li>
+    <li><strong>Copias disponibles:</strong> {{ num_ejemplares_disponibles }}</li>
+    <li><strong>Autores:</strong> {{ num_autores }}</li>
+    <li><strong>Géneros:</strong> {{ num_generos }}</li>
+    <li><strong>Idiomas:</strong> {{ num_idiomas }}</li>
+  </ul>
+  
+  <p>Has visitado esta pagina {{ num_visitas }}{% if num_visitas == 1 %} vez{% else %} veces{% endif %}.</p>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "BibliotrailApp/base.html" %}
+
+{% block content %}
+  <h1>Autor: {{ autor.apellidos }}, {{ autor.nombre }} </h1>
+  <p>{{ autor.fecha_nacimiento }} - {{autor.fecha_defuncion}}</p>
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Libros</h4>
+        {% for libro in autor.libro_set.all %}
+            <p><a href="{% url 'detalles-libro' libro.pk %}">{{ libro.titulo }}</a> ({{libro.pk}})</p>
+            <p>{{libro.resumen}}</p>
+        {% endfor %}
+  </div>
+{% endblock %}

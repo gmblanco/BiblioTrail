@@ -1,0 +1,22 @@
+{% extends "BibliotrailApp/base.html" %}
+
+{% block content %}
+  <h1>Titulo: {{ libro.titulo }}</h1>
+
+  <p><strong>Autor:</strong> {% for autor in libro.autor.all %}<a href="{% url 'detalles-autor' autor.pk %}">{{ autor }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p> 
+  <p><strong>Resumen:</strong> {{ libro.resumen }}</p>
+  <p><strong>ISBN:</strong> {{ libro.isbn }}</p>
+  <p><strong>Idioma:</strong> {{ libro.idioma }}</p>
+  <p><strong>Genero:</strong> {% for genero in libro.genero.all %} {{ genero }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Copias</h4>
+
+    {% for copia in libro.ejemplarlibro_set.all %}
+    <hr>
+    <p class="{% if copia.estado == 'd' %}text-success{% elif copia.estado == 'm' %}text-danger{% else %}text-warning{% endif %}">{{ copia.get_status_display }}</p>
+    {% if copia.estado != 'a' %}<p><strong>Pendiente de devolución:</strong> {{copia.due_back}}</p>{% endif %}
+    <p class="text-muted"><strong>Id:</strong> {{copia.id}}</p>
+    {% endfor %}
+  </div>
+{% endblock %}

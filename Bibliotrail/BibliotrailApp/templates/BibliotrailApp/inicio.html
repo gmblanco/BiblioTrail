@@ -1,0 +1,124 @@
+{% extends "BibliotrailApp/base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Intro Carousel -->
+<div class="container my-4">
+    <div id="carouselIntro" class="carousel slide mx-auto">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselIntro" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselIntro" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselIntro" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{% static 'BibliotrailApp/images/slide1.png' %}" class="d-block w-100" alt="Slide 1">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'BibliotrailApp/images/slide2.png' %}" class="d-block w-100" alt="Slide 2">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'BibliotrailApp/images/slide3.png' %}" class="d-block w-100" alt="Slide 3">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselIntro" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselIntro" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
+<!-- Bienvenida -->
+<div class="container mt-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+        <h3 class="mb-2 mb-sm-0">¡Bienvenido a BiblioTrail!</h3>
+        <button class="btn btn-primary mt-2 mt-sm-0" style="background-color: #6595f0;">Encuentra tu biblioteca más cercana</button>
+    </div>
+</div>
+
+
+<!-- Novedades -->
+<div class="container my-5">
+    <h2 class="mt-4">Novedades</h2>
+    <div id="carouselNovedades" class="carousel slide mx-auto" data-bs-ride="carousel">
+        <div class="carousel-inner">
+        
+            <div class="carousel-item active">
+                <div class="d-flex justify-content-start">
+                    <div class="card text-center shadow-sm" style="width: 11rem; margin-right: 15px;">
+                        <img src="{% static 'BibliotrailApp/images/portada.png' %}" class="card-img-top" alt="Portada del libro">
+                        <div class="card-body">
+                            <h6 class="card-title">Título del Libro 1</h6>
+                            <p class="card-text"><strong>Autor:</strong> Nombre del autor</p>
+                            <a href="#" class="btn btn-danger">Ver más</a>
+                        </div>
+                    </div>
+                    <div class="card text-center shadow-sm" style="width: 11rem; margin-right: 15px;">
+                        <img src="{% static 'BibliotrailApp/images/portada.png' %}" class="card-img-top" alt="Portada del libro">
+                        <div class="card-body">
+                            <h6 class="card-title">Título del Libro 1</h6>
+                            <p class="card-text"><strong>Autor:</strong> Nombre del autor</p>
+                            <a href="#" class="btn btn-danger">Ver más</a>
+                        </div>
+                    </div>
+                    <div class="card text-center shadow-sm" style="width: 11rem; margin-right: 15px;">
+                        <img src="{% static 'BibliotrailApp/images/portada.png' %}" class="card-img-top" alt="Portada del libro">
+                        <div class="card-body">
+                            <h6 class="card-title">Título del Libro 1</h6>
+                            <p class="card-text"><strong>Autor:</strong> Nombre del autor</p>
+                            <a href="#" class="btn btn-danger">Ver más</a>
+                        </div>
+                    </div>
+                    <div class="card text-center shadow-sm" style="width: 11rem; margin-right: 15px;">
+                        <img src="{% static 'BibliotrailApp/images/portada.png' %}" class="card-img-top" alt="Portada del libro">
+                        <div class="card-body">
+                            <h6 class="card-title">Título del Libro 1</h6>
+                            <p class="card-text"><strong>Autor:</strong> Nombre del autor</p>
+                            <a href="#" class="btn btn-danger">Ver más</a>
+                        </div>
+                    </div>
+                    <div class="card text-center shadow-sm" style="width: 11rem; margin-right: 15px;">
+                        <img src="{% static 'BibliotrailApp/images/portada.png' %}" class="card-img-top" alt="Portada del libro">
+                        <div class="card-body">
+                            <h6 class="card-title">Título del Libro 1</h6>
+                            <p class="card-text"><strong>Autor:</strong> Nombre del autor</p>
+                            <a href="#" class="btn btn-danger">Ver más</a>
+                        </div>
+                    </div>
+                    <div class="card text-center shadow-sm" style="width: 11rem; margin-right: 15px;">
+                        <img src="{% static 'BibliotrailApp/images/portada.png' %}" class="card-img-top" alt="Portada del libro">
+                        <div class="card-body">
+                            <h6 class="card-title">Título del Libro 1</h6>
+                            <p class="card-text"><strong>Autor:</strong> Nombre del autor</p>
+                            <a href="#" class="btn btn-danger">Ver más</a>
+                        </div>
+                    </div>
+                    <div class="card text-center shadow-sm" style="width: 11rem; margin-right: 15px;">
+                        <img src="{% static 'BibliotrailApp/images/portada.png' %}" class="card-img-top" alt="Portada del libro">
+                        <div class="card-body">
+                            <h6 class="card-title">Título del Libro 1</h6>
+                            <p class="card-text"><strong>Autor:</strong> Nombre del autor</p>
+                            <a href="#" class="btn btn-danger">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Controles del carrusel -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselNovedades" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselNovedades" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
+    </div>
+</div>
+
+{% endblock %}
