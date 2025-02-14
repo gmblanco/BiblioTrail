@@ -61,11 +61,11 @@ class PrestamoAdmin(admin.ModelAdmin):
 
 @admin.register(PerfilUsuario)
 class PerfilUsuarioAdmin(admin.ModelAdmin):
-    list_display = ('dni', 'telefono', 'direccion','sexo', 'user')  # Campos para mostrar
-    search_fields = ['dni', 'user__username', 'telefono','sexo', 'user__email']
+    list_display = ('dni', 'direccion','codigo_postal','ciudad','sexo', 'user')  # Campos para mostrar
+    search_fields = ['dni', 'user__username','sexo', 'user__email']
     fieldsets = (
         (None, {
-            'fields': ('user', 'dni', 'telefono','sexo', 'direccion')
+            'fields': ('user', 'dni','sexo', 'direccion')
         }),
     )
 @admin.register(EjemplarLibro)

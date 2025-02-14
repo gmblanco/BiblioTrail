@@ -6,6 +6,7 @@ from django.contrib import messages
 from .forms import RegistroForm
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import LoginForm
+from catalogo.models import PerfilUsuario
 
 class VistaRegistro(View):
     def get(self, request):
@@ -24,6 +25,19 @@ class VistaRegistro(View):
             else:
                 usuario.is_staff = False
             usuario.save()
+
+            """
+            # Crear el perfil asociado
+            PerfilUsuario.objects.create(
+                user=usuario,
+                dni=form.cleaned_data.get("dni"),
+                sexo=form.cleaned_data.get("sexo"),
+                direccion=form.cleaned_data.get("direccion"),
+                codigo_postal=form.cleaned_data.get("codigo_postal"),
+                ciudad=form.cleaned_data.get("ciudad"),
+                provincia=form.cleaned_data.get("provincia"),
+            )"""
+
             login(request, usuario)
             return redirect("Inicio")
         else:
@@ -31,10 +45,7 @@ class VistaRegistro(View):
                 for error in errors:
                     messages.error(request, f"{field.capitalize()}: {error}")
             return render(request, "registro/registro.html", {"form": form})
-            """
-            for mensaje in form.error_messages:
-                messages.error(request, form.error_messages[mensaje])
-            return render(request, "registro/registro.html", {"form": form})"""
+            
       
 def cerrar_sesion(request):
     logout(request)

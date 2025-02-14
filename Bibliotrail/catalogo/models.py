@@ -98,8 +98,11 @@ class Autor(models.Model):
 class PerfilUsuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="perfil")
     dni = models.CharField(max_length=9, unique=True, blank=True, null=True ,help_text="Ingrese su DNI")
-    telefono = models.CharField(max_length=20, help_text="Ingrese su número de teléfono")
+    sexo = models.CharField(max_length=1, choices=[('M', 'Hombre'), ('F', 'Mujer')])
     direccion = models.TextField(max_length=250, help_text="Ingrese la dirección de su domicilio")
+    codigo_postal = models.CharField(max_length=5)
+    ciudad = models.CharField(max_length=40)
+    provincia = models.CharField(max_length=40)
     sexo = models.CharField(max_length=1, choices=[('M', 'Hombre'), ('F', 'Mujer')])
 
     def __str__(self):
