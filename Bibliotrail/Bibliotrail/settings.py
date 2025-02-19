@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'autenticacion.apps.AutenticacionConfig',    
     'crispy_forms',
     'crispy_bootstrap5',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
