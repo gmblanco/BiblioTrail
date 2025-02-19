@@ -1,9 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-import re
+from django.forms import ModelForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate
+import re
 
 class RegistroForm(UserCreationForm):
     username = forms.CharField(
@@ -60,3 +61,16 @@ class LoginForm(AuthenticationForm):
                     self.add_error('username', "El nombre de usuario no existe.")
         
         return self.cleaned_data
+
+class PerfilForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+
+    # Asignar clases de Bootstrap directamente a los widgets
+    def __init__(self, *args, **kwargs):
+        super(PerfilForm, self).__init__(*args, **kwargs)
+        
+        # Asignar clase form-control a todos los campos del formulario
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'

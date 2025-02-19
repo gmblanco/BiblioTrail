@@ -2,6 +2,7 @@
     background-color: #6595f0 !important;
 }
 
+
 .carousel-inner {
     display: flex;
     flex-wrap: nowrap;
@@ -42,3 +43,9 @@
     background-color: #198754; /* Verde de Bootstrap */
     border-color: #198754; /* Borde verde */
 }
+
+.header__user {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }

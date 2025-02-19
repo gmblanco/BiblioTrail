@@ -1,5 +1,6 @@
 from django.shortcuts import render
 
+
 # Create your views here.
 
 def inicio(request):
@@ -17,3 +18,4 @@ def eventos(request):
 def reservas(request):
     
     return render(request, "BibliotrailApp/reservas.html")
+

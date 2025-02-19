@@ -3,10 +3,10 @@ from django.shortcuts import redirect, render
 from django.views.generic import View
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
-from .forms import RegistroForm
+from .forms import RegistroForm, LoginForm, PerfilForm
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import LoginForm
 from catalogo.models import PerfilUsuario
+from django.contrib.auth.models import User
 
 class VistaRegistro(View):
     def get(self, request):
@@ -72,3 +72,21 @@ def iniciar_sesion(request):
         form = LoginForm()
 
     return render(request, "login/login.html", {"form": form})
+
+def perfil(request):
+    usuario = User
+    contexto = {'usuario':usuario}
+    return render(request, "perfil/perfil.html",contexto)
+
+#@login_required(login_url = 'login')
+def editarPerfil(request):
+    usuario = request.user
+    form = PerfilForm(instance=usuario)
+
+    if request.method == 'POST':
+        form = PerfilForm(request.POST, instance = usuario)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil')
+
+    return render(request, "perfil/editar_perfil.html", {'form':form,})

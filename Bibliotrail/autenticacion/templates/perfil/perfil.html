@@ -1,0 +1,44 @@
+{% extends "BibliotrailApp/base.html" %}
+{% load static %}
+
+{% block content %}
+<main class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow-sm  rounded-4">
+                <div class="card-body text-center">
+                    <div class="position-relative d-inline-block mb-3">
+                        <img src="{% static 'BibliotrailApp/images/avatar.svg' %}" alt="User Avatar"
+                             class="rounded-circle border" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #6595f0;">
+                    </div>
+                    <h2 class="mb-1">{{ user.first_name }} {{ user.last_name }}</h2>
+                    <p class="text-muted">@{{ user.username }}</p>
+                    <a href="{% url 'editar_perfil' %}" class="btn btn-primary">Editar Perfil</a>
+                </div>
+            </div>
+
+            <div class="card mt-4 shadow-sm rounded-4">
+                <div class="card-header text-white" style="background-color: #6595f0;">
+                    <h5 class="mb-0">Sobre mi</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ user.profile.bio|default:"No bio available." }}</p>
+                </div>
+            </div>
+
+            <div class="card mt-4 shadow-sm rounded-4">
+                <div class="card-header text-white" style="background-color: #6595f0;">
+                    <h5 class="mb-0">Información de Contacto</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
+                        <li class="list-group-item"><strong>DNI:</strong> {{ user.profile.dni |default:"Not provided" }}</li>
+                        <li class="list-group-item"><strong>Address:</strong> {{ user.profile.address|default:"Not provided" }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
