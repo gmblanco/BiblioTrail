@@ -8,11 +8,11 @@
             <div class="card shadow-sm  rounded-4">
                 <div class="card-body text-center">
                     <div class="position-relative d-inline-block mb-3">
-                        <img src="{% static 'BibliotrailApp/images/avatar.svg' %}" alt="User Avatar"
+                        <img src="{{ perfil.avatar.url }}" alt="User Avatar"
                              class="rounded-circle border" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #6595f0;">
                     </div>
-                    <h2 class="mb-1">{{ user.first_name }} {{ user.last_name }}</h2>
-                    <p class="text-muted">@{{ user.username }}</p>
+                    <h2 class="mb-1">{{ perfil.nombre}} {{ perfil.apellido }}</h2>
+                    <p class="text-muted">@{{ perfil.username }}</p>
                     <a href="{% url 'editar_perfil' %}" class="btn btn-primary">Editar Perfil</a>
                 </div>
             </div>
@@ -22,7 +22,7 @@
                     <h5 class="mb-0">Sobre mi</h5>
                 </div>
                 <div class="card-body">
-                    <p>{{ user.profile.bio|default:"No bio available." }}</p>
+                    <p>{{ perfil.bio|default:"No bio available." }}</p>
                 </div>
             </div>
 
@@ -32,9 +32,9 @@
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
-                        <li class="list-group-item"><strong>DNI:</strong> {{ user.profile.dni |default:"Not provided" }}</li>
-                        <li class="list-group-item"><strong>Address:</strong> {{ user.profile.address|default:"Not provided" }}</li>
+                        <li class="list-group-item"><strong>Email:</strong> {{ perfil.user.email }}</li>
+                        <li class="list-group-item"><strong>DNI:</strong> {{ perfil.dni |default:"Not provided" }}</li>
+                        <li class="list-group-item"><strong>Address:</strong> {{ perfil.direccion|default:"Not provided" }}</li>
                     </ul>
                 </div>
             </div>

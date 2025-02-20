@@ -29,13 +29,13 @@
                 <div class="d-flex flex-column flex-sm-row align-items-center justify-content-end gap-3">
                     {% if user.is_authenticated %}
                         <a href="{% url 'perfil' %}" class="d-flex align-items-center text-decoration-none text-dark">
-                            <img src="{% static 'BibliotrailApp/images/avatar.svg' %}" alt="Avatar" 
+                            <img src="{{request.user.perfil.avatar.url}}" alt="Avatar" 
                                 class="rounded-circle img-fluid" style="width: 40px; height: 40px; object-fit: cover; border: 2px solid #6595f0;">
                             <span class="ms-2 d-none d-sm-inline">Hola, {{ user.username }}</span>
                         </a>
                         <a href="{% url 'cerrar_sesion' %}" class="btn btn-outline-danger btn-sm">Cerrar Sesión</a>
                     {% else %}
-                        <a href="{% url 'registro' %}" class="btn btn-danger btn-sm">Registrarse</a>
+                        <a href="{% url 'register' %}" class="btn btn-danger btn-sm">Registrarse</a>
                         <a href="{% url 'iniciar_sesion' %}" class="btn btn-outline-danger btn-sm">Iniciar Sesión</a>
                     {% endif %}
                 </div>

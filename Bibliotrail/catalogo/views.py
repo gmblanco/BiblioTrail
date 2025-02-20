@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from .models import Libro, Autor, EjemplarLibro, Genero, Idioma, PerfilUsuario, Prestamo
 from django.views import generic
+from django.contrib.auth.decorators import login_required
 #from django.contrib.auth.mixins import LoginRequiredMixin
 
+@login_required(login_url="iniciar_sesion")
 def catalogo(request):
     num_libros = Libro.objects.all().count()
     num_ejemplares = EjemplarLibro.objects.all().count()

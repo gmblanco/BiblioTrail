@@ -1,0 +1,33 @@
+{% extends "BibliotrailApp/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container d-flex align-items-center justify-content-center vh-100">
+    <div class="row justify-content-center w-100">
+        <!-- Ajustar el tamaño de la columna para que no esté tan comprimida en pantallas pequeñas -->
+        <div class="col-12 col-sm-8 col-md-6 col-lg-5">
+            <div class="card shadow-lg p-4">
+                <h2 class="text-center mb-4">Registro</h2>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger">
+                                    {{ field.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
+                    <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+                </form>
+                <p class="text-center mt-3">¿Ya tienes una cuenta? <a href="{% url 'iniciar_sesion' %}">Inicia sesión</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -16,16 +16,28 @@
                         {% csrf_token %}
                         <div class="mb-3 text-center">
                             <label for="profile_pic" class="form-label d-block">Avatar</label>
-                            <img src="{% static 'BibliotrailApp/images/avatar.svg' %}" 
+                            <img src="{{ perfil.avatar.url }}"
                                  alt="Avatar" class="rounded-circle img-thumbnail mb-2 border" 
                                  style="width: 120px; height: 120px; object-fit: cover; background-color: #6595f0;">
-                            <input type="file" class="form-control mt-2" id="profile_pic" name="profile_pic">
                         </div>
-
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for error in form.non_field_errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                         {% for field in form %}
                             <div class="mb-3">
                                 <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
                                 {{ field }}
+                                {% if field.errors %}
+                                    <ul class="errorlist">
+                                        {% for error in field.errors %}
+                                            <li style="color: red;">{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
                             </div>
                         {% endfor %}
 
@@ -39,8 +51,6 @@
         </div>
     </div>
 </main>
-
-
 
 {% endblock %}
 
