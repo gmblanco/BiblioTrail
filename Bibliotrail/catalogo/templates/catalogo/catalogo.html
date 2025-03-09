@@ -22,5 +22,50 @@
     <li><strong>Idiomas:</strong> {{ num_idiomas }}</li>
   </ul>
   
+  <button id="buscarLibros" class="btn btn-primary mt-2 mt-sm-0" style="background-color: #6595f0;">Buscar Libros</button>
+  <ul id="listaLibros">AAAA</ul>
+
+<!-- Scripts JS -->
+<script>
+document.getElementById("buscarLibros").addEventListener("click", function() {
+    // URLs de las APIs de las bibliotecas
+    const apis = [
+        "http://127.0.0.1:8001/api/libros/",  // API de libros
+    ];
+
+    // Hacer peticiones a todas las APIs
+    Promise.all(apis.map(url =>
+        fetch(url)
+            .then(response => response.json())
+            .catch(error => console.error("Error al obtener datos de la API:", error))
+    ))
+    .then(results => {
+        let lista = document.getElementById("listaLibros");
+        lista.innerHTML = "";  // Borra los resultados anteriores
+
+        // Verificar los datos de la respuesta
+        console.log(results);
+
+        // Combinar los resultados de todas las APIs
+        results.forEach(apiLibros => {
+            apiLibros.forEach(libro => {
+                let li = document.createElement("li");
+
+                // Comprobar que los campos están bien definidos
+                const autores = libro.autor 
+                  ? libro.autor.map(a => `${a.nombre} ${a.apellidos}`).join(", ") 
+                  : "Autor no disponible";
+                const titulo = libro.titulo || "Título no disponible";
+
+                // Añadir el título y el autor al elemento de la lista
+                li.textContent = `${titulo} - ${autores}`;
+                lista.appendChild(li);
+            });
+        });
+    })
+    .catch(error => console.error("Error al combinar las respuestas de las APIs:", error));
+});
+</script>
+
   <p>Has visitado esta pagina {{ num_visitas }}{% if num_visitas == 1 %} vez{% else %} veces{% endif %}.</p>
 {% endblock %}

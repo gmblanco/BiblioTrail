@@ -27,7 +27,11 @@ SECRET_KEY = 'django-insecure-2%+)a$1wyraj7!3=v)q$i+gn7fw8e5ax79w9rg3=@f_e$mdfua
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '127.0.0.2',  # Agregar la dirección IP donde corre la API
+    'localhost',
+]
 
 
 # Application definition
@@ -46,6 +50,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'django_extensions',
+    'rest_framework',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -56,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'Bibliotrail.urls'
@@ -154,3 +161,5 @@ MESSAGE_TAGS={
     mensajes_error.WARNING : 'warning',
     mensajes_error.ERROR : 'danger',
 }
+
+CORS_ALLOW_ALL_ORIGINS = True
