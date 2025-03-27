@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from .models import Libro, Autor, EjemplarLibro, Genero, Idioma, Prestamo
+import httpx
+from django.shortcuts import render
+from .models import Libro, Autor, EjemplarLibro, Genero, Idioma
 from django.views import generic
 from django.contrib.auth.decorators import login_required
 #from django.contrib.auth.mixins import LoginRequiredMixin
@@ -43,14 +45,24 @@ class AutorDetailView(generic.DetailView):
     model = Autor
     template_name = 'catalogo/detalles_autor.html'
 
-"""
-class PrestamosUsuarioListView(LoginRequiredMixin, generic.ListView):
-    ""
-    Vista genérica basada en clases que enumera los libros prestados al usuario actual.
-    ""
-    model = Prestamo
-    template_name ='catalog/prestamos_usuario.html'
-    paginate_by = 10
+def buscar_libros(request):
+    query = request.GET.get('q', '')
+    resultados = []
 
-    def get_queryset(self):
-        return Prestamo.objects.filter(usuario__user=self.request.user).exclude(estado ='c').order_by('fecha_prestamo')"""
+    if query:
+        urls = [
+            f'http://127.0.0.1:8001/api/libros/?search={query}',
+            f'http://127.0.0.1:8002/api/libros/?search={query}',
+        ]
+        for url in urls:
+            try:
+                response = httpx.get(url, timeout=10.0)
+                if response.status_code == 200:
+                    resultados.extend(response.json())  # Añade los libros de esta biblioteca
+            except httpx.RequestError:
+                pass  # Ignora errores de conexión
+
+    return render(request, 'catalogo/catalogo.html', {
+        'resultados': resultados,
+        'query': query
+    })

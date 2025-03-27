@@ -6,6 +6,30 @@
 {% endblock %}
 
 {% block content %}
+  <h1>Resultados de búsqueda</h1>
+
+  <form method="get" action="{% url 'buscar-libros' %}">
+    <input type="text" name="q" placeholder="Buscar libros..." value="{{ query }}">
+    <button type="submit">Buscar</button>
+  </form>
+
+  {% if resultados %}
+    <ul>
+      {% for libro in resultados %}
+        <li>
+          <strong>{{ libro.titulo }}</strong><br>
+          ISBN: {{ libro.isbn }}<br>
+          Editorial: {{ libro.editorial }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% elif query %}
+    <p>No se encontraron libros.</p>
+  {% endif %}
+{% endblock %}
+
+<!--
+% block content %
 <h1>Inicio BiblioTrail</h1>
 
   <p>Bienvenido a <em>BiblioTrail</em>!!</p>
@@ -24,8 +48,8 @@
   
   <button id="buscarLibros" class="btn btn-primary mt-2 mt-sm-0" style="background-color: #6595f0;">Buscar Libros</button>
   <ul id="listaLibros">AAAA</ul>
-
-<!-- Scripts JS -->
+-->
+<!-- Scripts JS 
 <script>
 document.getElementById("buscarLibros").addEventListener("click", function() {
     // URLs de las APIs de las bibliotecas
@@ -68,4 +92,5 @@ document.getElementById("buscarLibros").addEventListener("click", function() {
 </script>
 
   <p>Has visitado esta pagina {{ num_visitas }}{% if num_visitas == 1 %} vez{% else %} veces{% endif %}.</p>
-{% endblock %}
+% endblock %
+-->

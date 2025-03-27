@@ -1,5 +1,5 @@
 from django.contrib import admin
-"""from django.db import models 
+from django.db import models 
 from .models import Autor, Genero, Libro, Idioma, EjemplarLibro, Prestamo
 from django.utils.html import format_html
 
@@ -26,13 +26,12 @@ class LibroAdmin(admin.ModelAdmin):
 
 @admin.register(Prestamo)
 class PrestamoAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'ejemplar', 'aviso_estado' ,'fecha_prestamo', 'fecha_devolucion','fecha_limite')
+    list_display = ('ejemplar', 'aviso_estado', 'fecha_prestamo', 'fecha_devolucion', 'fecha_limite')
     list_filter = ('estado', 'fecha_prestamo', 'fecha_devolucion')
-    search_fields = ('usuario__user__username', 'usuario__dni', 'ejemplar__libro__titulo')
     readonly_fields = ('estado',)
     fieldsets = (
         (None, {
-            'fields': ('usuario', 'ejemplar', 'estado')
+            'fields': ('ejemplar', 'estado')
         }),
         ('Fechas', {
             'fields': ('fecha_prestamo', 'fecha_devolucion')
@@ -41,22 +40,23 @@ class PrestamoAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "ejemplar":
-            # Si estamos editando un préstamo, incluimos el ejemplar ya seleccionado
             obj_id = request.resolver_match.kwargs.get('object_id')
             if obj_id:
                 prestamo_actual = Prestamo.objects.get(id=obj_id)
-                kwargs["queryset"] = EjemplarLibro.objects.filter(models.Q(estado='d') | models.Q(id=prestamo_actual.ejemplar.id))
+                kwargs["queryset"] = EjemplarLibro.objects.filter(
+                    models.Q(estado='d') | models.Q(id=prestamo_actual.ejemplar.id)
+                )
             else:
-                kwargs["queryset"] = EjemplarLibro.objects.filter(estado='d')  # Solo disponibles al crear un préstamo
+                kwargs["queryset"] = EjemplarLibro.objects.filter(estado='d')
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-    
     def aviso_estado(self, obj):
-        if obj.estado == 'r':  # Si el estado es "Retrasado"
+        if obj.estado == 'r':
             return format_html('<span style="color: red;">{}</span>', obj.get_estado_display())
         elif obj.estado == 'a':
             return format_html('<span style="color: green;">{}</span>', obj.get_estado_display())
-        return obj.get_estado_display()  # Mostrar el estado normal
+        return obj.get_estado_display()
+
     aviso_estado.short_description = 'Estado'
 
 @admin.register(EjemplarLibro)
@@ -70,4 +70,4 @@ class EjemplarLibroAdmin(admin.ModelAdmin):
         ('Disponibilidad', {
             'fields': ('estado',)
         }),
-    )"""
+    )
