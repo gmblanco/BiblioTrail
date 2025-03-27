@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from catalogo.models import PerfilUsuario
+from .models import PerfilUsuario
 from autenticacion.forms import RegistroUsuarioForm, PerfilForm, LoginForm 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate

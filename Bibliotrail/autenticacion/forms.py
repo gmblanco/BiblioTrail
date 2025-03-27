@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate
 from django import forms
 import re
-from catalogo.models import PerfilUsuario
+from .models import PerfilUsuario
 
 class RegistroUsuarioForm(UserCreationForm):
 

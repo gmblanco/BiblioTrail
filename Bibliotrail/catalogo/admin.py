@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db import models 
-from .models import Autor, Genero, Libro, Idioma, EjemplarLibro, PerfilUsuario, Prestamo
+from .models import Autor, Genero, Libro, Idioma, EjemplarLibro, Prestamo
 from django.utils.html import format_html
 
 admin.site.register(Genero)
@@ -59,15 +59,6 @@ class PrestamoAdmin(admin.ModelAdmin):
         return obj.get_estado_display()  # Mostrar el estado normal
     aviso_estado.short_description = 'Estado'
 
-@admin.register(PerfilUsuario)
-class PerfilUsuarioAdmin(admin.ModelAdmin):
-    list_display = ('user','email','nombre','apellido','username' ,'direccion','codigo_postal','ciudad','provincia','sexo','dni', 'avatar', 'bio' )  # Campos para mostrar
-    search_fields = [ 'user__username','sexo', 'user__email']
-    fieldsets = (
-        (None, {
-            'fields': ('user','email','nombre','apellido','username' ,'direccion','codigo_postal','ciudad','provincia','sexo','dni', 'avatar', 'bio')
-        }),
-    )
 @admin.register(EjemplarLibro)
 class EjemplarLibroAdmin(admin.ModelAdmin):
     list_display = ('libro', 'estado', 'id')
