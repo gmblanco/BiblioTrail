@@ -9,19 +9,15 @@ admin.site.register(Idioma)
 class EjemplarLibroInline(admin.TabularInline):
     model = EjemplarLibro
 
-class LibroInline(admin.StackedInline):
-    model = Libro.autor.through
-    extra = 1
 
 @admin.register(Autor)
 class AutorAdmin(admin.ModelAdmin):
     list_display = ('apellidos', 'nombre', 'fecha_nacimiento', 'fecha_defuncion')
     fields = ['apellidos', 'nombre', ('fecha_nacimiento', 'fecha_defuncion')]
-    inlines = [LibroInline]
 
 @admin.register(Libro)
 class LibroAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'mostrar_autores', 'mostrar_generos', 'idioma')
+    list_display = ('titulo', 'mostrar_autor', 'mostrar_generos', 'idioma')
     inlines = [EjemplarLibroInline]
 
 @admin.register(Prestamo)

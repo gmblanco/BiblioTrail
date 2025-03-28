@@ -31,23 +31,25 @@ class Libro(models.Model):
     resumen = models.TextField(max_length=2000, help_text="Ingrese un breve resumen del libro")
     isbn = models.CharField('ISBN', max_length=13, help_text="Ingrese el ISBN del libro")
     editorial = models.CharField(max_length=200, help_text="Ingrese la editorial del libro")
-    autor = models.ManyToManyField('Autor', help_text="Seleccione un autor para este libro")
-    genero = models.ManyToManyField(Genero,help_text= "Escoja un genero para este libro")
+    autor = models.ForeignKey('Autor', on_delete=models.SET_NULL, null=True, help_text="Seleccione el autor del libro")
+    genero = models.ManyToManyField(Genero, help_text="Escoja un género para este libro")
     idioma = models.ForeignKey(Idioma, on_delete=models.SET_NULL, null=True, help_text="Seleccione el idioma del libro")
 
     def __str__(self):
         return self.titulo
-    
+
     def get_absolute_url(self):
-        return reverse('detalles-libro', args=[str(self.id)]) #Devuelve la URL a una instancia de Libro
+        return reverse('detalles-libro', args=[str(self.id)])
 
     def mostrar_generos(self):
-        return ', '.join([ genero.nombre for genero in self.genero.all()])
-    mostrar_generos.short_description = 'Generos'
+        return ', '.join([genero.nombre for genero in self.genero.all()])
+    mostrar_generos.short_description = 'Géneros'
 
-    def mostrar_autores(self):
-        return ', '.join([ f"{autor.apellidos} , {autor.nombre}" for autor in self.autor.all()])
-    mostrar_autores.short_description = 'Autor'
+    def mostrar_autor(self):
+        if self.autor:
+            return f"{self.autor.apellidos}, {self.autor.nombre}"
+        return "Sin autor"
+    mostrar_autor.short_description = 'Autor'
 
     class Meta:
         verbose_name = "Libro"
@@ -93,8 +95,6 @@ class Autor(models.Model):
     class Meta:
         verbose_name = "Autor"  # Nombre singular
         verbose_name_plural = "Autores"  # Nombre en plural
-
-
 
 class Prestamo(models.Model):
     #usuario = models.ForeignKey('autenticacion.PerfilUsuario', on_delete=models.CASCADE, help_text="Seleccione el usuario asociado a este préstamo")

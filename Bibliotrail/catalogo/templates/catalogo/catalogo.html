@@ -14,18 +14,76 @@
   </form>
 
   {% if resultados %}
-    <ul>
+  <div class="container">
+    <div class="row justify-content-center">
       {% for libro in resultados %}
-        <li>
-          <strong>{{ libro.titulo }}</strong><br>
-          ISBN: {{ libro.isbn }}<br>
-          Editorial: {{ libro.editorial }}
-        </li>
+        <div class="col-12 col-md-8 mb-4">
+          <div class="card text-dark" style="background-color: #c9d7f0;">
+            <div class="d-flex" style="height: 100%;">
+
+              <!--Sección izquierda: portada -->
+              <div class="p-2">
+                <img src="{{ libro.imagen_url|default:'https://via.placeholder.com/150x200' }}" 
+                     class="img-fluid" 
+                     style="width: 150px; height: 100%; object-fit: cover;" 
+                     alt="Portada del libro">
+              </div>
+
+              <!-- Línea vertical -->
+              <div class="vr mx-2"></div>
+
+              <!--Sección central-->
+              <div class="flex-grow-1 p-2">
+                <h5 class="card-title">{{ libro.titulo }}</h5>
+                <p class="card-text mb-2">
+                  <strong>Autor:</strong>
+                  {% if libro.autor %}
+                    {{ libro.autor.nombre }} {{ libro.autor.apellidos }}
+                  {% else %}
+                    <em>Autor no disponible</em>
+                  {% endif %}
+                  <br>
+                  <strong>ISBN:</strong> {{ libro.isbn }}<br>
+                  <strong>Resumen:</strong>
+                  <span id="resumen-corto-{{ libro.id }}">
+                    {{ libro.resumen|slice:":150" }}...
+                    <a href="javascript:void(0);" onclick="mostrarResumen('{{ libro.id }}')">Ver más</a>
+                  </span>
+                  <span id="resumen-completo-{{ libro.id }}" style="display:none;">
+                    {{ libro.resumen }}
+                  </span><br>
+                  <strong>Editorial:</strong> {{ libro.editorial }}
+                </p>
+              </div>
+
+              <!--Línea vertical-->
+              <div class="vr mx-2"></div>
+
+              <!--Sección derecha -->
+              <div class="d-flex align-items-center pe-3">
+                <a href="#" class="btn btn-danger btn-sm">Reservar</a>
+              </div>
+
+            </div>
+          </div>
+        </div>
       {% endfor %}
-    </ul>
-  {% elif query %}
-    <p>No se encontraron libros.</p>
-  {% endif %}
+    </div>
+  </div>
+{% elif query %}
+  <p class="text-center">No se encontraron libros.</p>
+{% endif %}
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function mostrarResumen(id) {
+    document.getElementById('resumen-corto-' + id).style.display = 'none';
+    document.getElementById('resumen-completo-' + id).style.display = 'inline';
+  }
+</script>
 {% endblock %}
 
 <!--

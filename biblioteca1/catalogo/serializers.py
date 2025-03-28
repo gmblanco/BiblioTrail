@@ -17,7 +17,7 @@ class AutorSerializer(ModelSerializer):
         fields = '__all__'
 
 class LibroSerializer(ModelSerializer):
-    autor = AutorSerializer(many=True)
+    autor = AutorSerializer()
     genero = GeneroSerializer(many=True)
     idioma = IdiomaSerializer()
     class Meta:
