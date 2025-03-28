@@ -1,10 +1,38 @@
-from datetime import timedelta
 from django.db import models
 from django.utils import timezone
-from django.urls import reverse
-import uuid
+from autenticacion.models import PerfilUsuario
 
-class Genero(models.Model):
+class PrestamoUsuario(models.Model):
+    usuario = models.ForeignKey(PerfilUsuario, on_delete=models.CASCADE)
+    titulo_libro = models.CharField(max_length=200)  # Título del libro prestado
+    biblioteca_origen = models.CharField(max_length=100)  # Ej: "biblioteca1" o una URL base
+    ejemplar_id = models.CharField(max_length=100)  # UUID o ID que recibo desde la API de la biblioteca
+    fecha_prestamo = models.DateField(default=timezone.now)
+    fecha_devolucion = models.DateField(null=True, blank=True)
+
+    ESTADO = (
+        ('a', 'Activo'),
+        ('d', 'Devuelto'),
+        ('r', 'Retrasado'),
+    )
+
+    estado = models.CharField(max_length=1, choices=ESTADO, default='a')
+
+    class Meta:
+        ordering = ['-fecha_prestamo']
+        verbose_name = "Préstamo de usuario"
+        verbose_name_plural = "Préstamos de usuarios"
+
+    def __str__(self):
+        return f"{self.titulo_libro} - {self.usuario.username} ({self.get_estado_display()})"
+
+    def marcar_como_devuelto(self):
+        self.fecha_devolucion = timezone.now().date()
+        self.estado = 'd'
+        self.save()
+
+
+"""class Genero(models.Model):
     #Modelo para genero literiario (Ej: Literatura clásica, Fantasía...)
 
     nombre = models.CharField(max_length=200, help_text="Ingrese el nombre del género literario. (Ej: Fantasía, Terror...)")
@@ -75,7 +103,6 @@ class EjemplarLibro(models.Model):
         return '%s (%s)' % (self.id, self.libro.titulo if self.libro else "Sin libro asociado")
     
     def esta_prestado(self):
-        """Verifica si este ejemplar está actualmente prestado."""
         return self.estado == 'p'
     
 class Autor(models.Model):
@@ -121,7 +148,6 @@ class Prestamo(models.Model):
         return f'{self.ejemplar.libro.titulo} - {self.usuario.username} ({self.estado})'
 
     def devolver(self):
-        """Registra la devolución del libro y cambia el estado del ejemplar."""
         if self.fecha_devolucion is None: # Verificamos que no haya sido devuelto antes
             self.fecha_devolucion = timezone.now().date() # Establecemos la fecha de devolución
             self.estado = 'c'  # Marcamos el préstamo como completado
@@ -131,12 +157,10 @@ class Prestamo(models.Model):
 
     @property
     def fecha_limite(self):
-        """Calcula la fecha en la que el usuario debe devolver el libro (15 días después del préstamo)."""
         return self.fecha_prestamo + timedelta(days=self.DIAS_PRESTAMO)
 
 
     def actualizar_estado(self):
-        """Actualiza el estado del préstamo dependiendo de la fecha de devolución y vencimiento."""
         if self.fecha_devolucion:  # Si ya fue devuelto
             self.estado = 'c'  # Completado
         elif timezone.now().date() > self.fecha_limite:  # Si pasó la fecha de vencimiento
@@ -146,7 +170,6 @@ class Prestamo(models.Model):
 
     @property
     def esta_vencido(self):
-        """Verifica si el préstamo está vencido (sin devolver y con fecha de devolución pasada)."""
         return self.fecha_devolucion is None and self.estado == 'a' and self.fecha_prestamo < timezone.now().date()
     
     def save(self, *args, **kwargs):
@@ -160,4 +183,4 @@ class Prestamo(models.Model):
                 self.ejemplar.save()  # Guardamos el ejemplar con el nuevo estado
 
         self.actualizar_estado()  # Actualizamos el estado del préstamo
-        super().save(*args, **kwargs)  # Llamamos al save() del modelo base
+        super().save(*args, **kwargs)  # Llamamos al save() del modelo base"""

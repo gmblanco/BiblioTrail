@@ -1,16 +1,16 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from catalogo.models import Libro, Autor
+#from catalogo.models import Libro, Autor
 from .serializers import *
 
 @api_view(['GET'])
 def getRutas(request):
     rutas = [
         'GET /api',
-        'GET /api/libros'
+        #'GET /api/libros'
     ]
     return Response(rutas)
-
+"""
 @api_view(['GET'])
 def getLibros(request):
     libros = Libro.objects.all()
@@ -27,4 +27,4 @@ def getAutores(request):
 def getEjemplares(request):
     ejemplares = EjemplarLibro.objects.all()
     serializer = EjemplarSerializer(ejemplares, many = True)
-    return Response(serializer.data)
+    return Response(serializer.data)"""

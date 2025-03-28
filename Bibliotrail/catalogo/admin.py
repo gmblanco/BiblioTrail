@@ -1,4 +1,8 @@
 from django.contrib import admin
+
+from .models import PrestamoUsuario
+admin.site.register(PrestamoUsuario)
+
 """from django.db import models 
 from .models import Autor, Genero, Libro, Idioma, EjemplarLibro, Prestamo
 from django.utils.html import format_html

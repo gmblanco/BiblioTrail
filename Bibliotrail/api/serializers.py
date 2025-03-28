@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from catalogo.models import *
 
+"""
 class IdiomaSerializer(ModelSerializer):
     class Meta:
         model = Idioma
@@ -29,3 +30,4 @@ class EjemplarSerializer(ModelSerializer):
     class Meta:
         model = EjemplarLibro
         fields = '__all__'
+"""

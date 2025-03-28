@@ -94,8 +94,6 @@ class Autor(models.Model):
         verbose_name = "Autor"  # Nombre singular
         verbose_name_plural = "Autores"  # Nombre en plural
 
-
-
 class Prestamo(models.Model):
     #usuario = models.ForeignKey('autenticacion.PerfilUsuario', on_delete=models.CASCADE, help_text="Seleccione el usuario asociado a este préstamo")
     ejemplar = models.ForeignKey(EjemplarLibro, on_delete=models.CASCADE, help_text="Seleccione el ejemplar que se desea tomar a préstamo")
