@@ -16,15 +16,19 @@ def catalogo(request):
 
     return render(request, "catalogo/catalogo.html",contexto)
 
+with open("bibliotecas.txt","r") as f:
+        lista_urls=f.read().split("\n")
+
+
 def buscar_libros(request):
     query = request.GET.get('q', '')
     resultados = []
-
     if query:
-        urls = [
+        urls=[f'http://{u}/api/libros/?search={query}' for u in lista_urls]
+        """urls = [
             f'http://127.0.0.1:8001/api/libros/?search={query}',
             f'http://127.0.0.1:8002/api/libros/?search={query}',
-        ]
+        ]"""
         for url in urls:
             try:
                 response = httpx.get(url, timeout=10.0)
@@ -37,6 +41,7 @@ def buscar_libros(request):
         'resultados': resultados,
         'query': query
     })
+
 
 """class LibroListView(generic.ListView):
     model = Libro
