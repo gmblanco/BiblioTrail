@@ -7,7 +7,6 @@ import requests
 import httpx
 import urllib.parse
 
-
 def catalogo(request):
     #sesiones
     num_visitas = request.session.get('num_visitas',0)
@@ -82,6 +81,7 @@ def buscar_libros(request):
 from django.shortcuts import render
 import httpx
 
+@login_required
 def detalles_libro(request):
     libro_id = request.GET.get("libro_id")
     biblioteca_url = request.GET.get("biblioteca_url")
