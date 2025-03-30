@@ -1,24 +1,20 @@
-from django.shortcuts import render
 from rest_framework import generics
 from .models import Libro
 from .serializers import *
 from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from .filters import LibroFilter
 
 class LibroListAPIView(generics.ListAPIView):
+    queryset = Libro.objects.all()
     serializer_class = LibroSerializer
-    filter_backends = [SearchFilter]
+    filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = ['titulo', 'autor__nombre', 'autor__apellidos']
-
-    def get_queryset(self):
-        queryset = Libro.objects.all()
-        autor_id = self.request.query_params.get('autor_id')
-        if autor_id:
-            queryset = queryset.filter(autor__id=autor_id)
-        return queryset
+    filterset_class = LibroFilter
 
 class AutorListAPIView(generics.ListAPIView):
     queryset = Autor.objects.all()

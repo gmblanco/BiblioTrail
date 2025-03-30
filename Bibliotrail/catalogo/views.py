@@ -5,8 +5,9 @@ from django.utils import timezone
 from .models import *
 import requests
 import httpx
+import urllib.parse
 
-@login_required(login_url="iniciar_sesion")
+
 def catalogo(request):
     #sesiones
     num_visitas = request.session.get('num_visitas',0)
@@ -19,31 +20,63 @@ def catalogo(request):
 
     return render(request, "catalogo/catalogo.html",contexto)
 
-with open("bibliotecas.txt","r") as f:
-        lista_urls=f.read().split("\n")
+def cargar_bibliotecas():
+    bibliotecas = {}
+    with open("bibliotecas.txt", "r") as f:
+        for linea in f:
+            if ',' in linea:
+                nombre, url = linea.strip().split(',', 1)
+                bibliotecas[nombre.strip()] = url.strip()
+    return bibliotecas
 
 def buscar_libros(request):
     query = request.GET.get('q', '')
+    biblioteca = request.GET.get('biblioteca', '')
+    genero = request.GET.get('genero', '')
+
+    bibliotecas = cargar_bibliotecas()
     resultados = []
-    if query:
-        urls=[f'http://{u}/api/libros/?search={query}' for u in lista_urls]
-        """urls = [
-            f'http://127.0.0.1:8001/api/libros/?search={query}',
-            f'http://127.0.0.1:8002/api/libros/?search={query}',
-        ]"""
-        for url in urls:
-            try:
-                response = httpx.get(url, timeout=10.0)
-                if response.status_code == 200:
-                    libros = response.json()
-                    for libro in libros:
-                        libro['biblioteca_url'] = url.split('/api')[0] # Guardo de qué URL viene este libro
-                        resultados.append(libro)
-            except httpx.RequestError:
-                pass
+
+    if biblioteca and biblioteca in bibliotecas:
+        urls = [f"http://{bibliotecas[biblioteca]}/api/libros/"]
+    else:
+        urls = [f"http://{url}/api/libros/" for url in bibliotecas.values()]
+    
+    for url in urls:
+        try:
+            params = {}
+            if query:
+                params['search'] = query
+            if genero:
+                params['genero'] = genero
+
+            # Imprime la URL real codificada
+            url_completa = f"{url}?{urllib.parse.urlencode(params)}"
+            print("URL completa:", url_completa)
+
+            response = httpx.get(url, params=params, timeout=10.0)
+            
+            if response.status_code == 200:
+                datos = response.json()
+                if isinstance(datos, dict) and 'results' in datos:
+                    libros = datos['results']
+                elif isinstance(datos, list):
+                    libros = datos
+                else:
+                    libros = []
+
+                for libro in libros:
+                    libro['biblioteca_url'] = url.split('/api')[0]
+                    resultados.append(libro)
+
+        except httpx.RequestError:
+            pass
     return render(request, 'catalogo/catalogo.html', {
         'resultados': resultados,
-        'query': query
+        'query': query,
+        'biblioteca': biblioteca,
+        'genero': genero,
+        'bibliotecas': bibliotecas,  # Pasamos todo el diccionario
     })
 
 from django.shortcuts import render
@@ -167,17 +200,3 @@ def prestar_ejemplar(request, ejemplar_id):
             messages.error(request, "No se pudo obtener el ejemplar.")
 
         return redirect("Catalogo")
-
-
-"""class LibroListView(generic.ListView):
-    model = Libro
-    paginate_by = 10
-class LibroDetailView(generic.DetailView):
-    model = Libro
-    template_name = 'catalogo/detalles_libro.html'
-class AutorListView(generic.ListView):
-    model = Autor
-    paginate_by = 10
-class AutorDetailView(generic.DetailView):
-    model = Autor
-    template_name = 'catalogo/detalles_autor.html'"""
