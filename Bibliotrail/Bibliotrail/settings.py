@@ -47,11 +47,12 @@ INSTALLED_APPS = [
     'contacto.apps.ContactoConfig',
     'catalogo.apps.CatalogoConfig',
     'autenticacion.apps.AutenticacionConfig',    
+    'bibliotecas.apps.BibliotecasConfig',  
     'crispy_forms',
     'crispy_bootstrap5',
     'django_extensions',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
 ]
 
 MIDDLEWARE = [

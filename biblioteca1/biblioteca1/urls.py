@@ -12,6 +12,7 @@ urlpatterns = [
     path('api/libros/<int:pk>/', LibroDetalleAPIView.as_view(), name='api-libro-detalle'),
     path('api/libros/<int:libro_id>/ejemplares-disponibles/', EjemplaresDisponiblesAPIView.as_view(), name='ejemplares-disponibles'),
     path('api/ejemplares/<uuid:pk>/', EjemplarDetalleAPIView.as_view(), name='api-ejemplar-detalle'),  
+    path('api/info/', BibliotecaInfoAPIView.as_view(), name='api-info-biblioteca'),
 ]
 
 if settings.DEBUG:

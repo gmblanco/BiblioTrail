@@ -1,0 +1,50 @@
+{% extends "BibliotrailApp/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="text-center mb-5">Bibliotecas Conectadas</h1>
+
+  <div class="row">
+    {% for b in bibliotecas %}
+      <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ b.nombre }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ b.nombre_sistema }}</h6>
+
+            <p class="card-text mt-2">
+              <strong>Dirección:</strong> {{ b.direccion }}<br>
+              <strong>Teléfono:</strong> {{ b.telefono }}<br>
+              <strong>Email:</strong> {{ b.email }}<br>
+              <strong>Horario:</strong> {{ b.horario|linebreaks  }}<br>
+              <strong>Total libros:</strong> {{ b.total_libros }}<br>
+              <strong>Total ejemplares:</strong> {{ b.total_ejemplares }}
+            </p>
+
+            {% if b.latitud and b.longitud %}
+              <div class="mt-auto">
+                <iframe
+                  width="100%"
+                  height="200"
+                  style="border:0; border-radius: 8px;"
+                  loading="lazy"
+                  allowfullscreen
+                  referrerpolicy="no-referrer-when-downgrade"
+                  src="https://www.google.com/maps?q={{ b.latitud }},{{ b.longitud }}&output=embed">
+                </iframe>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="alert alert-warning text-center">
+          No se pudo obtener información de las bibliotecas.
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

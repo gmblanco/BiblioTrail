@@ -10,4 +10,5 @@ urlpatterns = [
     path('catalogo/',include('catalogo.urls')),
     path('autenticacion/',include('autenticacion.urls')),
     path('api/',include('api.urls')),
+    path('bibliotecas/',include('bibliotecas.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

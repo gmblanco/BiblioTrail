@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db import models 
-from .models import Autor, Genero, Libro, Idioma, EjemplarLibro, Prestamo
+from .models import *
 from django.utils.html import format_html
 
 admin.site.register(Genero)
@@ -9,6 +9,11 @@ admin.site.register(Idioma)
 class EjemplarLibroInline(admin.TabularInline):
     model = EjemplarLibro
 
+@admin.register(Biblioteca)
+class BibliotecaAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        # Permite añadir solo si no hay ya una instancia creada
+        return not Biblioteca.objects.exists()
 
 @admin.register(Autor)
 class AutorAdmin(admin.ModelAdmin):

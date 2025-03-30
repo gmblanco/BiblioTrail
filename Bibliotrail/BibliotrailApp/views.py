@@ -1,15 +1,11 @@
 from django.shortcuts import render
-
-
-# Create your views here.
+from django.conf import settings
+import os
+import requests
 
 def inicio(request):
 
     return render(request, "BibliotrailApp/inicio.html")
-
-def novedades(request):
-    
-    return render(request, "BibliotrailApp/novedades.html")
 
 def eventos(request):
     
@@ -18,4 +14,3 @@ def eventos(request):
 def reservas(request):
     
     return render(request, "BibliotrailApp/reservas.html")
-

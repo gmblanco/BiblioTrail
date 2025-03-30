@@ -60,7 +60,7 @@
                         <a class="nav-link {% if request.path == '/catalogo/' %} active {% endif %}" href="{% url 'Catalogo' %}">Catálogo</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/novedades/' %} active {% endif %}" href="{% url 'Novedades' %}">Novedades</a>
+                        <a class="nav-link {% if request.path == '/bibliotecas/' %} active {% endif %}" href="{% url 'Bibliotecas' %}">Bibliotecas</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == '/eventos/' %} active {% endif %}" href="{% url 'Eventos' %}">Eventos</a>
@@ -108,7 +108,7 @@
                     <ul class="list-unstyled">
                         <li><a href="{% if request.path == '/' %} # {% else %} {% url 'Inicio' %} {% endif %}" class="text-light text-decoration-none">Inicio</a></li>
                         <li><a href="{% url 'Catalogo' %}" class="text-light text-decoration-none">Catálogo</a></li>
-                        <li><a href="{% url 'Novedades' %}" class="text-light text-decoration-none">Novedades</a></li>
+                        <li><a href="{% url 'Bibliotecas' %}" class="text-light text-decoration-none">Bibliotecas</a></li>
                         <li><a href="{% url 'Eventos' %}" class="text-light text-decoration-none">Eventos</a></li>
                     </ul>
                 </div>

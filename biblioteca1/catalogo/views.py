@@ -64,3 +64,13 @@ class EjemplarDetalleAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BibliotecaInfoAPIView(APIView):
+    def get(self, request):
+        biblioteca = Biblioteca.objects.first()  # Solo hay una
+        serializer = BibliotecaSerializer(biblioteca)
+        data = serializer.data
+        data["total_libros"] = Libro.objects.count()
+        data["total_ejemplares"] = EjemplarLibro.objects.count()
+        return Response(data)
