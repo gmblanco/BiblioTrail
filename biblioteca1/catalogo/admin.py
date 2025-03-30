@@ -19,6 +19,7 @@ class AutorAdmin(admin.ModelAdmin):
 class LibroAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'mostrar_autor', 'mostrar_generos', 'idioma')
     inlines = [EjemplarLibroInline]
+    fields = ('titulo', 'resumen', 'isbn', 'editorial', 'autor', 'genero', 'idioma', 'portada')
 
 @admin.register(Prestamo)
 class PrestamoAdmin(admin.ModelAdmin):

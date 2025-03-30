@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path
 from catalogo.views import *
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -11,3 +13,6 @@ urlpatterns = [
     path('api/libros/<int:libro_id>/ejemplares-disponibles/', EjemplaresDisponiblesAPIView.as_view(), name='ejemplares-disponibles'),
     path('api/ejemplares/<uuid:pk>/', EjemplarDetalleAPIView.as_view(), name='api-ejemplar-detalle'),  
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

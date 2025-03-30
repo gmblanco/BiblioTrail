@@ -2,6 +2,7 @@ from datetime import timedelta
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
+from django.core.validators import FileExtensionValidator
 import uuid
 
 class Genero(models.Model):
@@ -34,7 +35,13 @@ class Libro(models.Model):
     autor = models.ForeignKey('Autor', on_delete=models.SET_NULL, null=True, help_text="Seleccione el autor del libro")
     genero = models.ManyToManyField(Genero, help_text="Escoja un género para este libro")
     idioma = models.ForeignKey(Idioma, on_delete=models.SET_NULL, null=True, help_text="Seleccione el idioma del libro")
-
+    portada = models.ImageField(
+        upload_to='portadas/',
+        null=True,
+        blank=True,
+        help_text="Suba una imagen de portada para el libro",
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
+    )
     def __str__(self):
         return self.titulo
 

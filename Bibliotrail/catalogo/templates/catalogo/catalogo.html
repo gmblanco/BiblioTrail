@@ -22,11 +22,18 @@
             <div class="d-flex" style="height: 100%;">
 
               <!--Sección izquierda: portada -->
-              <div class="p-2">
-                <img src="{{ libro.imagen_url|default:'https://via.placeholder.com/150x200' }}" 
-                     class="img-fluid" 
-                     style="width: 150px; height: 100%; object-fit: cover;" 
-                     alt="Portada del libro">
+              <div class="ps-2 py-2 d-flex align-items-center">
+                {% if libro.portada %}
+                  <img src="{{ libro.portada }}" 
+                       class="img-fluid rounded shadow-sm"
+                       style="max-width: 180px; max-height: 240px; object-fit: cover;" 
+                       alt="Portada del libro">
+                {% else %}
+                  <img src="https://via.placeholder.com/180x240" 
+                       class="img-fluid rounded shadow-sm"
+                       style="max-width: 180px; max-height: 240px; object-fit: cover;" 
+                       alt="Portada no disponible">
+                {% endif %}
               </div>
 
               <!-- Línea vertical -->
