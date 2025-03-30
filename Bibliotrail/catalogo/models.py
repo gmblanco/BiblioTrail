@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from autenticacion.models import PerfilUsuario
+import httpx
 
 class PrestamoUsuario(models.Model):
     usuario = models.ForeignKey(PerfilUsuario, on_delete=models.CASCADE)
@@ -30,6 +31,36 @@ class PrestamoUsuario(models.Model):
         self.fecha_devolucion = timezone.now().date()
         self.estado = 'd'
         self.save()
+
+    def save(self, *args, **kwargs): #actualizar el estado del ejemplar en las bbdd de las bibliotecas
+        prestamo_anterior = None
+        if self.pk:
+            prestamo_anterior = PrestamoUsuario.objects.get(pk=self.pk)
+
+        super().save(*args, **kwargs)
+
+        # Siempre que haya un cambio de estado
+        if prestamo_anterior and prestamo_anterior.estado != self.estado:
+            base_urls = {
+                "biblioteca1": "http://127.0.0.1:8001",
+                "biblioteca2": "http://127.0.0.1:8002",
+            }
+
+            base_url = base_urls.get(self.biblioteca_origen)
+            if base_url:
+                url = f"{base_url}/api/ejemplares/{self.ejemplar_id}/"
+
+                nuevo_estado_ejemplar = "d" if self.estado == "d" else "p"
+
+                try:
+                    response = httpx.patch(url, json={"estado": nuevo_estado_ejemplar}, timeout=10.0)
+                    if response.status_code in [200, 202]:
+                        print(f"✔ Estado del ejemplar actualizado a '{nuevo_estado_ejemplar}' por cambio a '{self.estado}'")
+                    else:
+                        print(f"Error al actualizar ejemplar: {response.status_code}")
+                except httpx.RequestError as e:
+                    print(f"Error al conectar con la biblioteca externa: {e}")
+
 
 
 """class Genero(models.Model):

@@ -1,22 +1,63 @@
 {% extends "BibliotrailApp/base.html" %}
 
 {% block content %}
-  <h1>Titulo: {{ libro.titulo }}</h1>
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
 
-  <p><strong>Autor:</strong> {% for autor in libro.autor.all %}<a href="{% url 'detalles-autor' autor.pk %}">{{ autor }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p> 
-  <p><strong>Resumen:</strong> {{ libro.resumen }}</p>
-  <p><strong>ISBN:</strong> {{ libro.isbn }}</p>
-  <p><strong>Idioma:</strong> {{ libro.idioma }}</p>
-  <p><strong>Genero:</strong> {% for genero in libro.genero.all %} {{ genero }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+      <h1 class="mb-4 text-center">{{ libro.titulo }}</h1>
 
-  <div style="margin-left:20px;margin-top:20px">
-    <h4>Copias</h4>
+      <div class="mb-4">
+        <p><strong>Autor:</strong> {{ libro.autor.nombre }} {{ libro.autor.apellidos }}</p>
+        <p><strong>Fecha de nacimiento:</strong> {{ libro.autor.fecha_nacimiento }}</p>
+        {% if libro.autor.fecha_defuncion %}
+          <p><strong>Fecha de defunción:</strong> {{ libro.autor.fecha_defuncion }}</p>
+        {% endif %}
+        <p><strong>Editorial:</strong> {{ libro.editorial }}</p>
+        <p><strong>ISBN:</strong> {{ libro.isbn }}</p>
+        <p><strong>Idioma:</strong> {{ libro.idioma.nombre }}</p>
+        <p><strong>Géneros:</strong> 
+          {% for genero in libro.genero %}
+            {{ genero.nombre }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </p>
+      </div>
 
-    {% for copia in libro.ejemplarlibro_set.all %}
-    <hr>
-    <p class="{% if copia.estado == 'd' %}text-success{% elif copia.estado == 'm' %}text-danger{% else %}text-warning{% endif %}">{{ copia.get_status_display }}</p>
-    {% if copia.estado != 'a' %}<p><strong>Pendiente de devolución:</strong> {{copia.due_back}}</p>{% endif %}
-    <p class="text-muted"><strong>Id:</strong> {{copia.id}}</p>
-    {% endfor %}
+      <div class="mb-5">
+        <h3>Resumen</h3>
+        <p>{{ libro.resumen|linebreaks }}</p>
+      </div>
+
+      <hr>
+
+      <h3 class="mb-3">Ejemplares disponibles</h3>
+      {% if ejemplares %}
+        <div class="d-flex flex-column gap-3">
+          {% for ejemplar in ejemplares %}
+            {% if ejemplar.estado == "d" %}
+              <div class="card">
+                <div class="card-body d-flex align-items-center justify-content-between" style="background-color: #c9d7f0;">
+                  <div class="flex-grow-1">
+                    <p class="mb-0"><strong>ID:</strong> {{ ejemplar.id }}</p>
+                    <p class="mb-0"><strong>Estado:</strong> Disponible</p>
+                  </div>
+
+                  <div class="vr mx-4" style="height: 50px;"></div>
+
+                  <form action="{% url 'prestar-ejemplar' ejemplar.id %}" method="post" class="mb-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Prestar</button>
+                  </form>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <p>No hay ejemplares disponibles.</p>
+      {% endif %}
+
+    </div>
   </div>
+</div>
 {% endblock %}

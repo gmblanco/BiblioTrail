@@ -37,11 +37,13 @@
                 <h5 class="card-title">{{ libro.titulo }}</h5>
                 <p class="card-text mb-2">
                   <strong>Autor:</strong>
-                  {% if libro.autor %}
+                {% if libro.autor %}
+                  <a href="{% url 'detalles_autor' %}?autor_id={{ libro.autor.id }}&biblioteca_url={{ libro.biblioteca_url }}">
                     {{ libro.autor.nombre }} {{ libro.autor.apellidos }}
-                  {% else %}
-                    <em>Autor no disponible</em>
-                  {% endif %}
+                  </a>
+                {% else %}
+                  <em>Autor no disponible</em>
+                {% endif %}
                   <br>
                   <strong>ISBN:</strong> {{ libro.isbn }}<br>
                   <strong>Resumen:</strong>
@@ -61,7 +63,11 @@
 
               <!--Sección derecha -->
               <div class="d-flex align-items-center pe-3">
-                <a href="#" class="btn btn-danger btn-sm">Reservar</a>
+                <form method="get" action="{% url 'detalles_libro' %}">
+                  <input type="hidden" name="libro_id" value="{{ libro.id }}">
+                  <input type="hidden" name="biblioteca_url" value="{{ libro.biblioteca_url }}">
+                  <button type="submit" class="btn btn-danger btn-sm">Reservar</button>
+                </form>                
               </div>
 
             </div>

@@ -163,3 +163,5 @@ MESSAGE_TAGS={
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+LOGIN_URL = '/autenticacion/iniciar_sesion/'

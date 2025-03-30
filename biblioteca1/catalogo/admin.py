@@ -12,8 +12,8 @@ class EjemplarLibroInline(admin.TabularInline):
 
 @admin.register(Autor)
 class AutorAdmin(admin.ModelAdmin):
-    list_display = ('apellidos', 'nombre', 'fecha_nacimiento', 'fecha_defuncion')
-    fields = ['apellidos', 'nombre', ('fecha_nacimiento', 'fecha_defuncion')]
+    list_display = ('apellidos', 'nombre', 'fecha_nacimiento', 'fecha_defuncion', 'biografia')
+    fields = ['apellidos', 'nombre', ('fecha_nacimiento', 'fecha_defuncion'), 'biografia']
 
 @admin.register(Libro)
 class LibroAdmin(admin.ModelAdmin):

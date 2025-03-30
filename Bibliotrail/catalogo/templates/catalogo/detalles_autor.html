@@ -1,13 +1,32 @@
 {% extends "BibliotrailApp/base.html" %}
 
 {% block content %}
-  <h1>Autor: {{ autor.apellidos }}, {{ autor.nombre }} </h1>
-  <p>{{ autor.fecha_nacimiento }} - {{autor.fecha_defuncion}}</p>
-  <div style="margin-left:20px;margin-top:20px">
-    <h4>Libros</h4>
-        {% for libro in autor.libro_set.all %}
-            <p><a href="{% url 'detalles-libro' libro.pk %}">{{ libro.titulo }}</a> ({{libro.pk}})</p>
-            <p>{{libro.resumen}}</p>
-        {% endfor %}
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow p-4" style="background-color: #f4f8ff;">
+        <div class="card-body">
+          <h1 class="text-center mb-3">
+            {{ autor.nombre }} {{ autor.apellidos }}
+          </h1>
+
+          <p class="text-center text-muted mb-4">
+            {{ autor.fecha_nacimiento }}{% if autor.fecha_defuncion %} – {{ autor.fecha_defuncion }}{% endif %}
+          </p>
+
+          {% if autor.biografia %}
+            <h5 class="mb-2">Biografía</h5>
+            <p class="text-justify">{{ autor.biografia|linebreaks }}</p>
+          {% else %}
+            <p class="text-muted text-center">Este autor no tiene biografía disponible.</p>
+          {% endif %}
+
+          <div class="mt-4 text-center">
+            <a href="javascript:history.back()" class="btn btn-outline-secondary">← Volver</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
 {% endblock %}
