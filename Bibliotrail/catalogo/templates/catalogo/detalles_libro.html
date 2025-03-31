@@ -64,7 +64,7 @@
 
                   <div class="vr mx-4" style="height: 50px;"></div>
 
-                  <form action="{% url 'prestar-ejemplar' ejemplar.id %}" method="post" class="mb-0">
+                  <form method="post" action="{% url 'prestar-ejemplar' ejemplar.id %}?biblioteca_url={{ biblioteca_url }}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Prestar</button>
                   </form>

@@ -29,3 +29,8 @@ class EjemplarSerializer(ModelSerializer):
     class Meta:
         model = EjemplarLibro
         fields = '__all__'
+
+class BibliotecaSerializer(ModelSerializer):
+    class Meta:
+        model = Biblioteca
+        fields = '__all__'

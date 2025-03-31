@@ -167,11 +167,14 @@ def detalles_autor(request):
 
 @login_required
 def prestar_ejemplar(request, ejemplar_id):
+    biblioteca_url = request.GET.get("biblioteca_url")
+    if not biblioteca_url:
+        messages.error(request, "No se especificó la biblioteca.")
+        return redirect("Catalogo")
+
     if request.method == "POST":
         usuario = request.user.perfil 
-
-        api_base = "http://127.0.0.1:8001"
-        ejemplar_url = f"{api_base}/api/ejemplares/{ejemplar_id}/"
+        ejemplar_url = f"{biblioteca_url}/api/ejemplares/{ejemplar_id}/"
 
         # Paso 1: Obtener datos del ejemplar
         response = requests.get(ejemplar_url)
@@ -188,7 +191,7 @@ def prestar_ejemplar(request, ejemplar_id):
                 PrestamoUsuario.objects.create(
                     usuario=usuario,
                     titulo_libro=titulo_libro,
-                    biblioteca_origen="biblioteca1",
+                    biblioteca_origen=biblioteca_url,
                     ejemplar_id=str(ejemplar_id),
                     fecha_prestamo=timezone.now(),
                     estado='a',

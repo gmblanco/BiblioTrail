@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db import models 
-from .models import Autor, Genero, Libro, Idioma, EjemplarLibro, Prestamo
+from .models import *
 from django.utils.html import format_html
 
 admin.site.register(Genero)
@@ -9,16 +9,22 @@ admin.site.register(Idioma)
 class EjemplarLibroInline(admin.TabularInline):
     model = EjemplarLibro
 
+@admin.register(Biblioteca)
+class BibliotecaAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        # Permite añadir solo si no hay ya una instancia creada
+        return not Biblioteca.objects.exists()
 
 @admin.register(Autor)
 class AutorAdmin(admin.ModelAdmin):
-    list_display = ('apellidos', 'nombre', 'fecha_nacimiento', 'fecha_defuncion')
-    fields = ['apellidos', 'nombre', ('fecha_nacimiento', 'fecha_defuncion')]
+    list_display = ('apellidos', 'nombre', 'fecha_nacimiento', 'fecha_defuncion', 'biografia')
+    fields = ['apellidos', 'nombre', ('fecha_nacimiento', 'fecha_defuncion'), 'biografia']
 
 @admin.register(Libro)
 class LibroAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'mostrar_autor', 'mostrar_generos', 'idioma')
     inlines = [EjemplarLibroInline]
+    fields = ('titulo', 'resumen', 'isbn', 'editorial', 'autor', 'genero', 'idioma', 'portada')
 
 @admin.register(Prestamo)
 class PrestamoAdmin(admin.ModelAdmin):

@@ -3,6 +3,18 @@ from django.utils import timezone
 from autenticacion.models import PerfilUsuario
 import httpx
 
+def cargar_bibliotecas():
+        bibliotecas = {}
+        try:
+            with open("bibliotecas.txt", "r") as f:
+                for linea in f:
+                    if ',' in linea:
+                        nombre, url = linea.strip().split(',', 1)
+                        bibliotecas[nombre.strip()] = f"http://{url.strip()}"
+        except FileNotFoundError:
+            print("⚠ No se encontró el archivo bibliotecas.txt")
+        return bibliotecas
+
 class PrestamoUsuario(models.Model):
     usuario = models.ForeignKey(PerfilUsuario, on_delete=models.CASCADE)
     titulo_libro = models.CharField(max_length=200)  # Título del libro prestado
@@ -32,24 +44,27 @@ class PrestamoUsuario(models.Model):
         self.estado = 'd'
         self.save()
 
-    def save(self, *args, **kwargs): #actualizar el estado del ejemplar en las bbdd de las bibliotecas
+    #actualizar el estado del ejemplar en las bbdd de las bibliotecas
+    def save(self, *args, **kwargs):
         prestamo_anterior = None
         if self.pk:
             prestamo_anterior = PrestamoUsuario.objects.get(pk=self.pk)
 
         super().save(*args, **kwargs)
 
-        # Siempre que haya un cambio de estado
         if prestamo_anterior and prestamo_anterior.estado != self.estado:
-            base_urls = {
-                "biblioteca1": "http://127.0.0.1:8001",
-                "biblioteca2": "http://127.0.0.1:8002",
-            }
+            base_url = None
 
-            base_url = base_urls.get(self.biblioteca_origen)
+            # Si ya es una URL completa, úsala directamente
+            if self.biblioteca_origen.startswith("http"):
+                base_url = self.biblioteca_origen.rstrip('/')
+            else:
+                # Buscar la URL en bibliotecas.txt
+                bibliotecas = cargar_bibliotecas()
+                base_url = bibliotecas.get(self.biblioteca_origen)
+
             if base_url:
                 url = f"{base_url}/api/ejemplares/{self.ejemplar_id}/"
-
                 nuevo_estado_ejemplar = "d" if self.estado == "d" else "p"
 
                 try:
@@ -60,7 +75,8 @@ class PrestamoUsuario(models.Model):
                         print(f"Error al actualizar ejemplar: {response.status_code}")
                 except httpx.RequestError as e:
                     print(f"Error al conectar con la biblioteca externa: {e}")
-
+            else:
+                print(f"⚠ No se encontró la URL base para: {self.biblioteca_origen}")
 
 
 """class Genero(models.Model):

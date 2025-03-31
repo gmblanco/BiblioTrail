@@ -2,6 +2,7 @@ from datetime import timedelta
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
+from django.core.validators import FileExtensionValidator
 import uuid
 
 class Genero(models.Model):
@@ -34,7 +35,13 @@ class Libro(models.Model):
     autor = models.ForeignKey('Autor', on_delete=models.SET_NULL, null=True, help_text="Seleccione el autor del libro")
     genero = models.ManyToManyField(Genero, help_text="Escoja un género para este libro")
     idioma = models.ForeignKey(Idioma, on_delete=models.SET_NULL, null=True, help_text="Seleccione el idioma del libro")
-
+    portada = models.ImageField(
+        upload_to='portadas/',
+        null=True,
+        blank=True,
+        help_text="Suba una imagen de portada para el libro",
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
+    )
     def __str__(self):
         return self.titulo
 
@@ -161,3 +168,20 @@ class Prestamo(models.Model):
 
         self.actualizar_estado()  # Actualizamos el estado del préstamo
         super().save(*args, **kwargs)  # Llamamos al save() del modelo base
+
+class Biblioteca(models.Model):
+    nombre = models.CharField(max_length=200)
+    direccion = models.CharField(max_length=255)
+    latitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitud = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    telefono = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(blank=True)
+    horario = models.TextField(blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.pk and Biblioteca.objects.exists():
+            raise Exception("Solo se puede crear una instancia de Biblioteca.")
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.nombre
