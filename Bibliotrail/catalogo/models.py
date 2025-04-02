@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from autenticacion.models import PerfilUsuario
+from datetime import timedelta
 import httpx
 
 def cargar_bibliotecas():
@@ -22,6 +23,7 @@ class PrestamoUsuario(models.Model):
     ejemplar_id = models.CharField(max_length=100)  # UUID o ID que recibo desde la API de la biblioteca
     fecha_prestamo = models.DateField(default=timezone.now)
     fecha_devolucion = models.DateField(null=True, blank=True)
+    fecha_limite = models.DateField(null=True, blank=True)
 
     ESTADO = (
         ('a', 'Activo'),
@@ -50,16 +52,28 @@ class PrestamoUsuario(models.Model):
         if self.pk:
             prestamo_anterior = PrestamoUsuario.objects.get(pk=self.pk)
 
+        # Si es un nuevo préstamo y no hay fecha límite
+        if not self.fecha_limite and not self.fecha_devolucion:
+            self.fecha_limite = self.fecha_prestamo + timedelta(days=15)
+
+        # Si sigue activo y ya pasó la fecha límite, cambiar a 'retrasado'
+        if self.estado == 'a' and self.fecha_limite:
+            fecha_limite = self.fecha_limite
+            if isinstance(fecha_limite, timezone.datetime):
+                fecha_limite = fecha_limite.date()
+            if timezone.localdate() > fecha_limite:
+                self.estado = 'r'
+
+
         super().save(*args, **kwargs)
 
+        # Si cambió el estado respecto al anterior, actualiza el ejemplar en la biblioteca externa
         if prestamo_anterior and prestamo_anterior.estado != self.estado:
             base_url = None
 
-            # Si ya es una URL completa, úsala directamente
             if self.biblioteca_origen.startswith("http"):
                 base_url = self.biblioteca_origen.rstrip('/')
             else:
-                # Buscar la URL en bibliotecas.txt
                 bibliotecas = cargar_bibliotecas()
                 base_url = bibliotecas.get(self.biblioteca_origen)
 
@@ -77,3 +91,4 @@ class PrestamoUsuario(models.Model):
                     print(f"Error al conectar con la biblioteca externa: {e}")
             else:
                 print(f"⚠ No se encontró la URL base para: {self.biblioteca_origen}")
+

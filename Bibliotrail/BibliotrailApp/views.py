@@ -42,6 +42,3 @@ def eventos(request):
     
     return render(request, "BibliotrailApp/eventos.html")
 
-def reservas(request):
-    
-    return render(request, "BibliotrailApp/reservas.html")

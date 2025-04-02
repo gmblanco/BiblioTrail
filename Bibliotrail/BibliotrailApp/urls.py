@@ -6,5 +6,4 @@ from django.urls import path, include
 urlpatterns = [
     path('', views.inicio, name="Inicio"),
     path('eventos/', views.eventos, name="Eventos"),
-    path('reservas/', views.reservas, name="Reservas"),
 ]
