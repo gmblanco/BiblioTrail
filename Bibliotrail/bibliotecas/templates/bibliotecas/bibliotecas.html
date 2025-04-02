@@ -31,7 +31,7 @@
                   loading="lazy"
                   allowfullscreen
                   referrerpolicy="no-referrer-when-downgrade"
-                  src="https://www.google.com/maps?q={{ b.latitud }},{{ b.longitud }}&output=embed">
+                  src="https://www.google.com/maps?q={{ b.direccion|urlencode }}&output=embed">
                 </iframe>
               </div>
             {% endif %}
