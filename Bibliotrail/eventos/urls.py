@@ -4,5 +4,5 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('', views.inicio, name="Inicio"),
+    path('', views.eventos, name="Eventos"),
 ]

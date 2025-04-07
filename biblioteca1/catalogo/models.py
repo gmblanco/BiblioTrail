@@ -184,3 +184,29 @@ class Biblioteca(models.Model):
 
     def __str__(self):
         return self.nombre
+
+class Evento(models.Model):
+    titulo = models.CharField(max_length=200)
+    descripcion = models.TextField()
+    fecha_inicio = models.DateTimeField()
+    fecha_fin = models.DateTimeField()
+    lugar = models.CharField(max_length=200)
+    plazas_totales = models.PositiveIntegerField()
+    plazas_ocupadas = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['fecha_inicio']
+        verbose_name = "Evento"
+        verbose_name_plural = "Eventos"
+
+    def __str__(self):
+        return f"{self.titulo} ({self.fecha_inicio.strftime('%d/%m')} - {self.fecha_fin.strftime('%d/%m')})"
+
+    def plazas_disponibles(self):
+        return self.plazas_totales - self.plazas_ocupadas
+
+    def esta_lleno(self):
+        return self.plazas_ocupadas >= self.plazas_totales
+
+    def duracion_dias(self):
+        return (self.fecha_fin.date() - self.fecha_inicio.date()).days + 1

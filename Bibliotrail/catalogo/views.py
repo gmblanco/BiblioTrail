@@ -38,6 +38,7 @@ def buscar_libros(request):
 
     if biblioteca and biblioteca in bibliotecas:
         urls = [f"http://{bibliotecas[biblioteca]}/api/libros/"]
+        print(urls)
     else:
         urls = [f"http://{url}/api/libros/" for url in bibliotecas.values()]
     
@@ -203,3 +204,4 @@ def prestar_ejemplar(request, ejemplar_id):
             messages.error(request, "No se pudo obtener el ejemplar.")
 
         return redirect("Catalogo")
+    

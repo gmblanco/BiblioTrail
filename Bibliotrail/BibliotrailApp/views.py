@@ -36,9 +36,3 @@ def inicio(request):
         'grupos_libros': libros_agrupados
     })
 
-
-
-def eventos(request):
-    
-    return render(request, "BibliotrailApp/eventos.html")
-

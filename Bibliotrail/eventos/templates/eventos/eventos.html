@@ -1,0 +1,106 @@
+{% extends "BibliotrailApp/base.html" %}
+{% load static %}
+
+{% block title %}
+  <title>Eventos</title>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+
+  <!-- Título y botón de calendario -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="text-primary fw-bold">Próximos eventos</h2>
+    <a href="#" class="text-decoration-none text-info">
+      <i class="bi bi-calendar3"></i> Ver en calendario
+    </a>
+  </div>
+
+  <!-- Selector de biblioteca -->
+  <form method="get" action="{% url 'Eventos' %}" class="mb-4">
+    <div class="row g-2 align-items-center">
+      <div class="col-md-6">
+        <select name="biblioteca" class="form-select">
+            {% for nombre, url in bibliotecas.items %}
+              <option value="{{ nombre }}" {% if biblioteca == nombre %}selected{% endif %}>
+                {{ nombre|capfirst }}
+              </option>
+            {% endfor %}
+        </select>          
+      </div>
+      <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-outline-primary">Filtrar</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Lista de eventos -->
+  {% if eventos %}
+  <div class="row justify-content-center">
+    {% for evento in eventos %}
+      <div class="col-12 col-md-10 mb-4">
+        <div class="card shadow-sm" style="background-color: #f0f4ff;">
+          <div class="row g-0">
+
+            <!-- Detalles -->
+            <div class="col-md-9">
+              <div class="card-body">
+                <h5 class="card-title text-primary fw-bold">{{ evento.titulo }}</h5>
+                <p class="card-text">
+                  <strong>Lugar:</strong> {{ evento.lugar }}<br>
+                  <strong>Fecha:</strong> {{ evento.fecha_inicio|slice:":10" }}<br>
+                  <strong>Hora:</strong> {{ evento.fecha_inicio|slice:"11:16" }}
+                  {% if evento.fecha_fin and evento.fecha_fin != evento.fecha_inicio %}
+                  - {{ evento.fecha_fin|slice:"11:16" }}
+                  {% endif %}
+
+                  <br>
+                  <strong>Descripción:</strong>
+                  <span id="descripcion-corta-{{ evento.id }}">
+                    {{ evento.descripcion|slice:":200" }}...
+                    <a href="javascript:void(0);" onclick="mostrarDescripcion('{{ evento.id }}')">Ver más</a>
+                  </span>
+                  <span id="descripcion-completa-{{ evento.id }}" style="display:none;">
+                    {{ evento.descripcion }}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Acción -->
+            <div class="col-md-3 d-flex flex-column justify-content-center align-items-center border-start p-3">
+                <button class="btn btn-outline-secondary mb-2" disabled>Inscripción no disponible</button>
+                
+                {% if evento.plazas_disponibles == 0 %}
+                  <div class="small text-danger fw-semibold">
+                    Evento completo
+                  </div>
+                {% else %}
+                  <div class="small text-success">
+                    {{ evento.plazas_disponibles }} plazas disponibles
+                  </div>
+                {% endif %}
+              </div>              
+
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="text-center text-muted mt-5">
+    <p>No hay eventos disponibles.</p>
+  </div>
+{% endif %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function mostrarDescripcion(id) {
+    document.getElementById('descripcion-corta-' + id).style.display = 'none';
+    document.getElementById('descripcion-completa-' + id).style.display = 'inline';
+  }
+</script>
+{% endblock %}

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'autenticacion.apps.AutenticacionConfig',    
     'bibliotecas.apps.BibliotecasConfig', 
     'reservas.apps.ReservasConfig', 
+    'eventos.apps.EventosConfig', 
     'crispy_forms',
     'crispy_bootstrap5',
     'django_extensions',

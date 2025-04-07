@@ -3,6 +3,7 @@ from .models import Libro
 from .serializers import *
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -20,6 +21,16 @@ class AutorListAPIView(generics.ListAPIView):
     queryset = Autor.objects.all()
     serializer_class = AutorSerializer
     search_fields = ['nombre', 'apellidos']
+
+class EventoListAPIView(generics.ListAPIView):
+    queryset = Evento.objects.all()
+    serializer_class = EventoSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['titulo', 'descripcion']
+
+class EventoDetalleAPIView(RetrieveAPIView):
+    queryset = Evento.objects.all()
+    serializer_class = EventoSerializer
 
 class EjemplaresDisponiblesAPIView(generics.ListAPIView):
     serializer_class = EjemplarSerializer
@@ -64,7 +75,6 @@ class EjemplarDetalleAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class BibliotecaInfoAPIView(APIView):
     def get(self, request):
