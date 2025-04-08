@@ -73,3 +73,14 @@ class EjemplarLibroAdmin(admin.ModelAdmin):
             'fields': ('estado',)
         }),
     )
+
+@admin.register(Evento)
+class EventoAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'fecha_inicio', 'fecha_fin', 'lugar', 'plazas_totales', 'plazas_ocupadas', 'plazas_disponibles')
+    list_filter = ('fecha_inicio', 'fecha_fin', 'lugar')
+    search_fields = ('titulo', 'descripcion', 'lugar')
+    date_hierarchy = 'fecha_inicio'
+
+    def plazas_disponibles(self, obj):
+        return obj.plazas_disponibles()
+    plazas_disponibles.short_description = 'Plazas disponibles'

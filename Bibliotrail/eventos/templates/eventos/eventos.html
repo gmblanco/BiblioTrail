@@ -11,7 +11,7 @@
   <!-- Título y botón de calendario -->
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="text-primary fw-bold">Próximos eventos</h2>
-    <a href="#" class="text-decoration-none text-info">
+    <a href="{% url 'calendario' %}?biblioteca={{ biblioteca }}" class="text-decoration-none text-info">
       <i class="bi bi-calendar3"></i> Ver en calendario
     </a>
   </div>
@@ -48,12 +48,16 @@
                 <h5 class="card-title text-primary fw-bold">{{ evento.titulo }}</h5>
                 <p class="card-text">
                   <strong>Lugar:</strong> {{ evento.lugar }}<br>
-                  <strong>Fecha:</strong> {{ evento.fecha_inicio|slice:":10" }}<br>
-                  <strong>Hora:</strong> {{ evento.fecha_inicio|slice:"11:16" }}
-                  {% if evento.fecha_fin and evento.fecha_fin != evento.fecha_inicio %}
-                  - {{ evento.fecha_fin|slice:"11:16" }}
+                  {% if evento.fecha_fin and evento.fecha_inicio|date:"Y-m-d" != evento.fecha_fin|date:"Y-m-d" %}
+                    <strong>Fecha:</strong> {{ evento.fecha_inicio|date:"j \\d\\e F \\d\\e Y" }} - {{ evento.fecha_fin|date:"j \\d\\e F \\d\\e Y" }}<br>
+                  {% else %}
+                    <strong>Fecha:</strong> {{ evento.fecha_inicio|date:"j \\d\\e F \\d\\e Y" }}<br>
                   {% endif %}
 
+                  <strong>Hora:</strong> {{ evento.fecha_inicio|date:"H:i" }}
+                  {% if evento.fecha_fin %}
+                    - {{ evento.fecha_fin|date:"H:i" }}
+                  {% endif %}
                   <br>
                   <strong>Descripción:</strong>
                   <span id="descripcion-corta-{{ evento.id }}">
@@ -69,8 +73,15 @@
 
             <!-- Acción -->
             <div class="col-md-3 d-flex flex-column justify-content-center align-items-center border-start p-3">
-                <button class="btn btn-outline-secondary mb-2" disabled>Inscripción no disponible</button>
-                
+                {% if evento.ya_inscrito %}
+                <button class="btn btn-secondary mb-2" disabled>Ya inscrito</button>
+                {% else %}
+                  <form method="post" action="{% url 'inscripcion_evento' evento.biblioteca_id evento.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success mb-2">Inscribirse</button>
+                  </form>
+                {% endif %}
+
                 {% if evento.plazas_disponibles == 0 %}
                   <div class="small text-danger fw-semibold">
                     Evento completo

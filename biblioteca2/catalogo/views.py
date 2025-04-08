@@ -3,6 +3,7 @@ from .models import Libro
 from .serializers import *
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -20,6 +21,51 @@ class AutorListAPIView(generics.ListAPIView):
     queryset = Autor.objects.all()
     serializer_class = AutorSerializer
     search_fields = ['nombre', 'apellidos']
+
+class EventoListAPIView(generics.ListAPIView):
+    queryset = Evento.objects.all()
+    serializer_class = EventoSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['titulo', 'descripcion']
+
+from rest_framework.generics import RetrieveAPIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Evento
+from .serializers import EventoSerializer
+from django.shortcuts import get_object_or_404
+
+class EventoDetalleAPIView(APIView):
+    def get(self, request, pk):
+        evento = get_object_or_404(Evento, pk=pk)
+        serializer = EventoSerializer(evento)
+        return Response(serializer.data)
+
+    def patch(self, request, pk):
+        evento = get_object_or_404(Evento, pk=pk)
+        print("📨 PATCH recibido:", request.data)
+        print("Evento antes:", evento.titulo, evento.plazas_ocupadas)
+        if request.data.get("incrementar_ocupadas"):
+            if evento.plazas_ocupadas < evento.plazas_totales:
+                evento.plazas_ocupadas += 1
+                evento.save()
+                print("Evento actualizado:", evento.plazas_ocupadas)
+                return Response({"ok": True}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "No hay plazas disponibles"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if request.data.get("decrementar_ocupadas"):
+            if evento.plazas_ocupadas > 0:
+                evento.plazas_ocupadas -= 1
+                evento.save()
+                return Response({"ok": True}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "No hay plazas que liberar"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+        return Response({"error": "Petición inválida"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class EjemplaresDisponiblesAPIView(generics.ListAPIView):
     serializer_class = EjemplarSerializer
@@ -64,7 +110,6 @@ class EjemplarDetalleAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class BibliotecaInfoAPIView(APIView):
     def get(self, request):

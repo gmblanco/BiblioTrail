@@ -34,3 +34,8 @@ class BibliotecaSerializer(ModelSerializer):
     class Meta:
         model = Biblioteca
         fields = '__all__'
+
+class EventoSerializer(ModelSerializer):
+    class Meta:
+        model = Evento
+        fields = '__all__'
