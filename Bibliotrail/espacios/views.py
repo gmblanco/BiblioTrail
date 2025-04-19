@@ -62,16 +62,15 @@ def disponibilidad_matriz(request):
     else:
         fecha = datetime.today().date()
 
-
     if not biblioteca and bibliotecas:
-        biblioteca = list(bibliotecas.keys())[0] #si no se ha seleccionado biblioteca cojo la primera de la lista
+        biblioteca = list(bibliotecas.keys())[0]
 
     base_urls = bibliotecas
     base_url = base_urls.get(biblioteca)
     if base_url and not base_url.startswith("http"):
         base_url = f"http://{base_url}"
 
-    # 1. Definir las horas disponibles
+    # 1. Generar franjas horarias
     hora_actual = time(8, 0)
     fin = time(21, 0)
     delta = timedelta(minutes=30)
@@ -83,29 +82,35 @@ def disponibilidad_matriz(request):
 
     espacios = []
 
-    # 2. Obtener los espacios
     try:
+        # 2. Obtener lista de espacios desde API externa
         r = httpx.get(f"{base_url}/api/espacios/", timeout=10.0)
         if r.status_code == 200:
             lista_espacios = r.json()
 
+            # 3. Obtener disponibilidad local (una sola llamada)
+            r_dispo = httpx.get(f"http://localhost:8000/espacios/api/disponibilidad-general/?biblioteca={biblioteca}&fecha={fecha}", timeout=10.0)
+            reservas_por_espacio = r_dispo.json() if r_dispo.status_code == 200 else {}
+
             for espacio in lista_espacios:
-                url = f"http://localhost:8000/espacios/api/disponibilidad/?espacio_id={espacio['id']}&biblioteca={biblioteca}&fecha={fecha}"
-                try:
-                    r_bloques = httpx.get(url, timeout=10.0)
-                    bloques_api = r_bloques.json() if r_bloques.status_code == 200 else []
-                except:
-                    bloques_api = []
+                espacio_id = str(espacio['id'])  # Las claves del JSON son strings
+                reservas = reservas_por_espacio.get(espacio_id, [])
 
                 bloques = []
                 for hora_str in horas:
-                    bloque_actual = next((b for b in bloques_api if b["start"].endswith(hora_str)), None)
-                    disponible = bloque_actual and bloque_actual["title"] == "Disponible"
-                    siguiente = (datetime.strptime(hora_str, "%H:%M") + delta).strftime("%H:%M")
+                    inicio = datetime.strptime(hora_str, "%H:%M").time()
+                    fin_bloque = (datetime.combine(fecha, inicio) + delta).time()
+
+                    ocupado = any(
+                        datetime.strptime(r[0], "%H:%M:%S").time() < fin_bloque and
+                        datetime.strptime(r[1], "%H:%M:%S").time() > inicio
+                        for r in reservas
+                    )
+
                     bloques.append({
                         "hora_inicio": hora_str,
-                        "hora_fin": siguiente,
-                        "disponible": disponible
+                        "hora_fin": fin_bloque.strftime("%H:%M"),
+                        "disponible": not ocupado
                     })
 
                 espacios.append({
@@ -116,9 +121,8 @@ def disponibilidad_matriz(request):
                     "bloques": bloques
                 })
 
-
     except httpx.RequestError as e:
-        print("Error al cargar espacios:", e)
+        print("Error al cargar espacios o disponibilidad:", e)
 
     return render(request, "espacios/disponibilidad.html", {
         "bibliotecas": bibliotecas,
@@ -127,3 +131,34 @@ def disponibilidad_matriz(request):
         "horas": horas,
         "espacios": espacios
     })
+
+from django.http import JsonResponse
+
+class DisponibilidadGeneralAPIView(APIView):
+    def get(self, request):
+        biblioteca = request.query_params.get("biblioteca")
+        fecha = request.query_params.get("fecha")
+
+        if not biblioteca or not fecha:
+            return Response({"error": "Faltan parámetros"}, status=400)
+
+        try:
+            fecha = datetime.strptime(fecha, "%Y-%m-%d").date()
+        except ValueError:
+            return Response({"error": "Fecha inválida"}, status=400)
+
+        reservas = ReservaEspacio.objects.filter(
+            biblioteca_origen=biblioteca,
+            fecha=fecha
+        ).values(
+            "espacio_id_remoto", "hora_inicio", "hora_fin"
+        )
+
+        reservas_dict = {}
+        for r in reservas:
+            key = r["espacio_id_remoto"]
+            if key not in reservas_dict:
+                reservas_dict[key] = []
+            reservas_dict[key].append((r["hora_inicio"], r["hora_fin"]))
+
+        return JsonResponse(reservas_dict)
