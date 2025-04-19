@@ -1,0 +1,45 @@
+{% extends "BibliotrailApp/base.html" %}
+{% block title %}
+<title>Mis reservas de espacios</title>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="fw-bold mb-4" style="color: #6595f0;">Mis reservas de salas</h2>
+
+  {% if reservas %}
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle text-center shadow-sm">
+        <thead class="table-light">
+          <tr>
+            <th>Espacio</th>
+            <th>Biblioteca</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for reserva in reservas %}
+            <tr>
+              <td>{{ reserva.titulo_espacio }}</td>
+              <td>{{ reserva.biblioteca_origen|title }}</td>
+              <td>{{ reserva.fecha }}</td>
+              <td>{{ reserva.hora_inicio|time:"H:i" }} - {{ reserva.hora_fin|time:"H:i" }}</td>
+              <td>
+                <a href="{% url 'cancelar_reserva_espacio' reserva.id %}" class="btn btn-sm btn-danger">
+                  Cancelar
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info" role="alert">
+      Aún no has reservado ningún espacio.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

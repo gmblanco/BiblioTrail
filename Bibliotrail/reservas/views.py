@@ -122,7 +122,7 @@ def cancelar_inscripcion(request, inscripcion_id):
 
     return redirect('mis_inscripciones')
 
-class DisponibilidadEspacioAPIView(APIView):
+"""class DisponibilidadEspacioAPIView(APIView):
     def get(self, request):
         espacio_id = request.query_params.get("espacio_id")
         biblioteca = request.query_params.get("biblioteca")
@@ -236,7 +236,7 @@ def disponibilidad_matriz(request):
         "fecha": fecha,
         "horas": horas,
         "espacios": espacios
-    })
+    })"""
 
 
 @csrf_exempt
@@ -270,3 +270,15 @@ def crear_reserva_espacio(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
+@login_required
+def mis_espacios(request):
+    reservas = ReservaEspacio.objects.filter(usuario=request.user.perfil).order_by("-fecha", "-hora_inicio")
+    return render(request, "reservas/mis_espacios.html", {
+        "reservas": reservas
+    })
+@login_required
+def cancelar_reserva_espacio(request, reserva_id):
+    reserva = get_object_or_404(ReservaEspacio, id=reserva_id, usuario=request.user.perfil)
+    reserva.delete()
+    messages.success(request, "Has cancelado la reserva correctamente.")
+    return redirect("mis_espacios")

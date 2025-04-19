@@ -66,6 +66,9 @@
                         <a class="nav-link {% if request.path == '/eventos/' %} active {% endif %}" href="{% url 'Eventos' %}">Eventos</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/espacios/' %} active {% endif %}" href="{% url 'calendario_espacios' %}">Espacios</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {% if request.path == '/contacto/' %} active {% endif %}" href="{% url 'Contacto' %}">Contacto</a>
                     </li>
                     <li class="nav-item dropdown">
@@ -74,7 +77,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'mis_prestamos' %}">Préstamos de libros</a></li>
-                            <li><a class="dropdown-item" href="{% url 'Reservas' %}">Asientos biblioteca</a></li>
+                            <li><a class="dropdown-item" href="{% url 'mis_espacios' %}">Asientos biblioteca</a></li>
                             <li><a class="dropdown-item" href="{% url 'mis_inscripciones' %}">Inscripciones a eventos</a></li>
                         </ul>
                     </li>

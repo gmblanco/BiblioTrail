@@ -13,4 +13,5 @@ urlpatterns = [
     path('bibliotecas/',include('bibliotecas.urls')),
     path('reservas/',include('reservas.urls')),
     path('eventos/',include('eventos.urls')),
+    path('espacios/',include('espacios.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
