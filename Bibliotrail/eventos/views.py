@@ -9,9 +9,12 @@ from django.http import JsonResponse
 from catalogo.views import cargar_bibliotecas
 from django.views.decorators.http import require_GET
 
+
 def eventos(request):
     bibliotecas = cargar_bibliotecas()
-    biblioteca = request.GET.get("biblioteca", "")
+    biblioteca = request.GET.get("biblioteca")
+    if not biblioteca and bibliotecas:
+        biblioteca = list(bibliotecas.keys())[0]  # Usar la primera biblioteca por defecto
     eventos = []
     eventos_inscritos = []
     if request.user.is_authenticated:

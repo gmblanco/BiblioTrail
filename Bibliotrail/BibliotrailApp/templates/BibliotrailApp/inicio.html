@@ -4,13 +4,13 @@
 
 <!-- Intro Carousel -->
 <div class="container my-4">
-    <div id="carouselIntro" class="carousel slide mx-auto">
+    <div id="carouselIntro" class="carousel slide mx-auto rounded shadow" data-bs-ride="carousel">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselIntro" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
             <button type="button" data-bs-target="#carouselIntro" data-bs-slide-to="1" aria-label="Slide 2"></button>
             <button type="button" data-bs-target="#carouselIntro" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div>
-        <div class="carousel-inner">
+        <div class="carousel-inner rounded">
             <div class="carousel-item active">
                 <img src="{% static 'BibliotrailApp/images/slide1.png' %}" class="d-block w-100" alt="Slide 1">
             </div>
@@ -23,37 +23,67 @@
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselIntro" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
+            <span class="visually-hidden">Anterior</span>
         </button>
         <button class="carousel-control-next" type="button" data-bs-target="#carouselIntro" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
+            <span class="visually-hidden">Siguiente</span>
         </button>
     </div>
 </div>
 
 <!-- Bienvenida -->
-<div class="container mt-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-center">
-        <h3 class="mb-2 mb-sm-0">¡Bienvenido a BiblioTrail!</h3>
+<div class="container mt-5">
+    <div class="text-center">
+        <h2 class="fw-bold" style="color: #6595f0;">Bienvenido a BiblioTrail</h2>
+        <p class="text-muted mt-2 lead">Tu puerta de acceso al conocimiento en todas las bibliotecas conectadas</p>
+        <hr class="w-25 mx-auto" style="border-top: 3px solid #6595f0;">
     </div>
 </div>
 
+<!-- Sección de beneficios -->
+<div class="container mt-5">
+  <div class="row text-center g-4">
+    <div class="col-md-4">
+      <div class="p-4 border rounded shadow-sm h-100">
+        <i class="bi bi-book-half display-4 text-primary"></i>
+        <h5 class="mt-3">Explora el catálogo</h5>
+        <p class="text-muted">Accede a miles de libros de diferentes bibliotecas desde un solo lugar.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="p-4 border rounded shadow-sm h-100">
+        <i class="bi bi-calendar-check display-4 text-primary"></i>
+        <h5 class="mt-3">Reserva al instante</h5>
+        <p class="text-muted">Consulta disponibilidad y gestiona tus reservas de forma rápida y sencilla.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="p-4 border rounded shadow-sm h-100">
+        <i class="bi bi-geo-alt display-4 text-primary"></i>
+        <h5 class="mt-3">Encuentra tu biblioteca</h5>
+        <p class="text-muted">Descubre horarios, direcciones y servicios de cada biblioteca conectada.</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Novedades -->
 <div class="container my-5">
-    <h2 class="mt-4 mb-4">Novedades</h2>
+    <h2 class="mt-4 mb-4 fw-bold" style="color: #6595f0;">Novedades</h2>
     <div id="carouselNovedades" class="carousel slide mx-auto" data-bs-ride="carousel">
         <div class="carousel-inner">
             {% for grupo in grupos_libros %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}">
                 <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
                     {% for libro in grupo %}
-                    <div class="card text-center shadow-sm" style="width: 14rem;">
-                        <img src="{{ libro.portada }}" class="card-img-top" alt="Portada del libro">
+                    <div class="card text-center shadow-sm border border-2" style="width: 14rem; overflow: hidden;">
+                        <div class="overflow-hidden">
+                          <img src="{{ libro.portada }}" class="card-img-top hover-zoom" alt="Portada del libro">
+                        </div>
                         <div class="card-body">
                             <h6 class="card-title text-truncate">{{ libro.titulo }}</h6>
-                            <p class="card-text"><strong>Autor:</strong> {{ libro.autor.nombre }}</p>
+                            <p class="card-text"><strong>Autor:</strong> {{ libro.autor.nombre }} {{ libro.autor.apellidos }}</p>
                             <a href="{% url 'detalles_libro' %}?libro_id={{ libro.id }}&biblioteca_url=http://{{ libro.origen }}" class="btn btn-danger">Ver más</a>
                         </div>
                     </div>
@@ -75,5 +105,57 @@
     </div>
 </div>
 
+<!-- Preguntas frecuentes -->
+<div class="container my-5">
+  <h2 class="fw-bold mb-4" style="color: #6595f0;">Preguntas Frecuentes</h2>
+  <div class="accordion" id="faqAccordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="faq1">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+          ¿Cómo puedo reservar un libro?
+        </button>
+      </h2>
+      <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Simplemente busca el libro que te interesa y pulsa en el botón <strong>"Reservar"</strong>. Si estás autenticado, se guardará tu reserva automáticamente.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="faq2">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+          ¿Qué bibliotecas están integradas?
+        </button>
+      </h2>
+      <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Puedes ver todas las bibliotecas conectadas en la sección <strong>"Bibliotecas"</strong> del menú principal.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="faq3">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+          ¿Necesito una cuenta para usar BiblioTrail?
+        </button>
+      </h2>
+      <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Sí, necesitas tener una cuenta para poder acceder a todas las funcionalidades de BiblioTrail, como realizar reservas o consultar tu historial. Si aún no dispones de una, puedes darte de alta fácilmente en la plataforma. El proceso es rápido, seguro y te permitirá disfrutar de todos los servicios disponibles.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Estilo para efecto zoom -->
+<style>
+  .hover-zoom {
+    transition: transform 0.4s ease;
+  }
+  .hover-zoom:hover {
+    transform: scale(1.08);
+  }
+</style>
 
 {% endblock %}

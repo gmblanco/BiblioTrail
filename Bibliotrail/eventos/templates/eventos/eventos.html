@@ -9,27 +9,25 @@
 <div class="container my-4">
 
   <!-- Título y botón de calendario -->
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="text-primary fw-bold">Próximos eventos</h2>
-    <a href="{% url 'calendario' %}?biblioteca={{ biblioteca }}" class="text-decoration-none text-info">
-      <i class="bi bi-calendar3"></i> Ver en calendario
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold" style="color: #4a77d4;">Próximos eventos</h2>
+    <a href="{% url 'calendario' %}?biblioteca={{ biblioteca }}" class="btn btn-outline-secondary">
+      <i class="bi bi-calendar3 me-1"></i> Ver en calendario
     </a>
   </div>
 
   <!-- Selector de biblioteca -->
-  <form method="get" action="{% url 'Eventos' %}" class="mb-4">
+  <form method="get" action="{% url 'Eventos' %}" id="form-biblioteca" class="mb-4">
     <div class="row g-2 align-items-center">
       <div class="col-md-6">
-        <select name="biblioteca" class="form-select">
+        <label for="selector-biblioteca" class="form-label fw-semibold text-secondary">Selecciona una biblioteca:</label>
+        <select name="biblioteca" class="form-select" id="selector-biblioteca">
             {% for nombre, url in bibliotecas.items %}
               <option value="{{ nombre }}" {% if biblioteca == nombre %}selected{% endif %}>
                 {{ nombre|capfirst }}
               </option>
             {% endfor %}
-        </select>          
-      </div>
-      <div class="col-md-2 d-grid">
-        <button type="submit" class="btn btn-outline-primary">Filtrar</button>
+        </select>
       </div>
     </div>
   </form>
@@ -39,70 +37,76 @@
   <div class="row justify-content-center">
     {% for evento in eventos %}
       <div class="col-12 col-md-10 mb-4">
-        <div class="card shadow-sm" style="background-color: #f0f4ff;">
+        <div class="card border-0 rounded-3" style="background-color: #f0f4ff;">
           <div class="row g-0">
 
             <!-- Detalles -->
-            <div class="col-md-9">
-              <div class="card-body">
-                <h5 class="card-title text-primary fw-bold">{{ evento.titulo }}</h5>
-                <p class="card-text">
-                  <strong>Lugar:</strong> {{ evento.lugar }}<br>
-                  {% if evento.fecha_fin and evento.fecha_inicio|date:"Y-m-d" != evento.fecha_fin|date:"Y-m-d" %}
-                    <strong>Fecha:</strong> {{ evento.fecha_inicio|date:"j \\d\\e F \\d\\e Y" }} - {{ evento.fecha_fin|date:"j \\d\\e F \\d\\e Y" }}<br>
-                  {% else %}
-                    <strong>Fecha:</strong> {{ evento.fecha_inicio|date:"j \\d\\e F \\d\\e Y" }}<br>
-                  {% endif %}
+            <div class="col-md-9 p-4">
+              <h4 class="fw-bold mb-2" style="color: #4a77d4;">{{ evento.titulo }}</h4>
+              <p class="mb-2 text-muted">
+                <i class="bi bi-geo-alt me-1 text-secondary"></i>
+                <strong>Lugar:</strong> {{ evento.lugar }}
+              </p>
 
-                  <strong>Hora:</strong> {{ evento.fecha_inicio|date:"H:i" }}
-                  {% if evento.fecha_fin %}
-                    - {{ evento.fecha_fin|date:"H:i" }}
+              <p class="mb-2">
+                <span class="badge bg-light border text-secondary me-2">
+                  {% if evento.fecha_fin and evento.fecha_inicio|date:"Y-m-d" != evento.fecha_fin|date:"Y-m-d" %}
+                    {{ evento.fecha_inicio|date:"j \\d\\e F" }} – {{ evento.fecha_fin|date:"j \\d\\e F" }}
+                  {% else %}
+                    {{ evento.fecha_inicio|date:"j \\d\\e F" }}
                   {% endif %}
-                  <br>
-                  <strong>Descripción:</strong>
-                  <span id="descripcion-corta-{{ evento.id }}">
-                    {{ evento.descripcion|slice:":200" }}...
-                    <a href="javascript:void(0);" onclick="mostrarDescripcion('{{ evento.id }}')">Ver más</a>
-                  </span>
-                  <span id="descripcion-completa-{{ evento.id }}" style="display:none;">
-                    {{ evento.descripcion }}
-                  </span>
-                </p>
-              </div>
+                </span>
+                <span class="badge bg-light border text-secondary">
+                  🕒 {{ evento.fecha_inicio|date:"H:i" }}{% if evento.fecha_fin %} – {{ evento.fecha_fin|date:"H:i" }}{% endif %}
+                </span>
+              </p>
+
+              <p class="mt-3 text-secondary">
+                <strong>Descripción:</strong>
+                <span id="descripcion-corta-{{ evento.id }}">
+                  {{ evento.descripcion|slice:":200" }}...
+                  <a href="javascript:void(0);" class="text-decoration-none" onclick="mostrarDescripcion('{{ evento.id }}')">Ver más</a>
+                </span>
+                <span id="descripcion-completa-{{ evento.id }}" style="display:none;">
+                  {{ evento.descripcion }}
+                </span>
+              </p>
             </div>
 
             <!-- Acción -->
-            <div class="col-md-3 d-flex flex-column justify-content-center align-items-center border-start p-3">
-                {% if evento.ya_inscrito %}
-                <button class="btn btn-secondary mb-2" disabled>Ya inscrito</button>
-                {% else %}
-                  <form method="post" action="{% url 'inscripcion_evento' evento.biblioteca_id evento.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-success mb-2">Inscribirse</button>
-                  </form>
-                {% endif %}
+            <div class="col-md-3 d-flex flex-column justify-content-center align-items-center p-3 border-start" style="background-color: #f0f4ff; border-left: 1px solid #dee2e6;">
+              {% if evento.ya_inscrito %}
+                <button class="btn btn-outline-secondary w-100 mb-2" disabled>
+                  <i class="bi bi-check2-circle me-1"></i> Ya inscrito
+                </button>
+              {% else %}
+                <form method="post" action="{% url 'inscripcion_evento' evento.biblioteca_id evento.id %}" class="w-100">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-success w-100 mb-2">
+                    <i class="bi bi-pencil-fill me-1"></i> Inscribirse
+                  </button>
+                </form>
+              {% endif %}
 
-                {% if evento.plazas_disponibles == 0 %}
-                  <div class="small text-danger fw-semibold">
-                    Evento completo
-                  </div>
-                {% else %}
-                  <div class="small text-success">
-                    {{ evento.plazas_disponibles }} plazas disponibles
-                  </div>
-                {% endif %}
-              </div>              
+              {% if evento.plazas_disponibles == 0 %}
+                <p class="text-danger mt-2 mb-0 fw-semibold text-center">Evento completo</p>
+              {% else %}
+                <p class="text-danger mt-2 mb-0 fw-semibold text-center">{{ evento.plazas_disponibles }} plazas disponibles</p>
+              {% endif %}
+            </div>
+
 
           </div>
         </div>
       </div>
     {% endfor %}
   </div>
-{% else %}
-  <div class="text-center text-muted mt-5">
-    <p>No hay eventos disponibles.</p>
-  </div>
-{% endif %}
+  {% else %}
+    <div class="text-center text-muted mt-5">
+      <i class="bi bi-calendar-x display-4"></i>
+      <p class="mt-3 fs-5">No hay eventos disponibles en esta biblioteca.</p>
+    </div>
+  {% endif %}
 
 </div>
 {% endblock %}
@@ -113,5 +117,9 @@
     document.getElementById('descripcion-corta-' + id).style.display = 'none';
     document.getElementById('descripcion-completa-' + id).style.display = 'inline';
   }
+
+  document.getElementById("selector-biblioteca").addEventListener("change", function() {
+    document.getElementById("form-biblioteca").submit();
+  });
 </script>
 {% endblock %}

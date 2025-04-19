@@ -2,39 +2,40 @@
 {% load static %}
 
 {% block title %}
-    <title>Catalogo</title>
+    <title>Catálogo</title>
 {% endblock %}
 
 {% block content %}
-<div class="container my-4">
+<div class="container my-5">
   <div class="row">
-    <div class="col">
-      <h2 class="mb-4 text-center text-primary fw-bold border-bottom pb-2">Catálogo de libros</h2>
+    <div class="col text-center">
+      <h2 class="mb-4 fw-bold border-bottom border-3 pb-2" style="color: #6595f0;">Catálogo de Libros</h2>
     </div>
   </div>
 
-  <form method="get" action="{% url 'buscar-libros' %}" class="mb-4">
-    <!-- Barra de búsqueda principal -->
-    <div class="row mb-2">
-      <div class="col-md-12">
-        <input type="text" name="q" placeholder="Buscar libros por título o autor..."
-               value="{{ query }}" class="form-control form-control-lg" />
+  <form method="get" action="{% url 'buscar-libros' %}" class="mb-5">
+    <!-- Buscador -->
+    <div class="row justify-content-center mb-3">
+      <div class="col-12 col-md-8">
+        <div class="input-group shadow-sm">
+          <input type="text" name="q" placeholder="Buscar libros por título o autor..."
+                 value="{{ query }}" class="form-control form-control-lg" />
+          <button type="submit" class="btn btn-lg" style="background-color: #6595f0; color: white;"><i class="bi bi-search"></i></button>
+        </div>
       </div>
     </div>
-  
-    <!-- Filtros: Biblioteca y Género -->
-    <div class="row g-2">
-      <div class="col-md-6">
+
+    <!-- Filtros -->
+    <div class="row justify-content-center g-3">
+      <div class="col-12 col-md-4">
         <select name="biblioteca" class="form-select">
           <option value="">Todas las bibliotecas</option>
           {% for nombre, url in bibliotecas.items %}
-            <option value="{{ nombre }}" {% if biblioteca == nombre %}selected{% endif %}>
-              {{ nombre|capfirst }}
-            </option>
+            <option value="{{ nombre }}" {% if biblioteca == nombre %}selected{% endif %}>{{ nombre|capfirst }}</option>
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-4">
+      <div class="col-12 col-md-4">
         <select name="genero" class="form-select">
           <option value="">Todos los géneros</option>
           <option value="Misterio" {% if genero == 'Misterio' %}selected{% endif %}>Misterio</option>
@@ -43,21 +44,15 @@
           <option value="Aventura" {% if genero == 'Aventura' %}selected{% endif %}>Aventura</option>
         </select>
       </div>
-      <div class="col-md-2 d-grid">
-        <button type="submit" class="btn btn-success">Buscar</button>
-      </div>
     </div>
   </form>
-  
 
-  <!-- Resultados -->
   {% if resultados %}
     <div class="row justify-content-center">
       {% for libro in resultados %}
         <div class="col-12 col-md-8 mb-4">
           <div class="card shadow-sm" style="background-color: #c9d7f0;">
             <div class="row g-0">
-              <!-- Portada -->
               <div class="col-md-3 d-flex align-items-center">
                 {% if libro.portada %}
                   <img src="{{ libro.portada }}" class="img-fluid rounded-start p-2" alt="Portada del libro">
@@ -65,12 +60,10 @@
                   <img src="https://via.placeholder.com/180x240" class="img-fluid rounded-start p-2" alt="Portada no disponible">
                 {% endif %}
               </div>
-
-              <!-- Info -->
               <div class="col-md-7">
                 <div class="card-body">
-                  <h5 class="card-title">{{ libro.titulo }}</h5>
-                  <p class="card-text">
+                  <h5 class="card-title fw-semibold">{{ libro.titulo }}</h5>
+                  <p class="card-text mb-1">
                     <strong>Autor:</strong>
                     {% if libro.autor %}
                       <a href="{% url 'detalles_autor' %}?autor_id={{ libro.autor.id }}&biblioteca_url={{ libro.biblioteca_url }}">
@@ -79,9 +72,10 @@
                     {% else %}
                       <em>Autor no disponible</em>
                     {% endif %}
-                    <br>
-                    <strong>ISBN:</strong> {{ libro.isbn }}<br>
-                    <strong>Editorial:</strong> {{ libro.editorial }}<br>
+                  </p>
+                  <p class="card-text mb-1"><strong>ISBN:</strong> {{ libro.isbn }}</p>
+                  <p class="card-text mb-1"><strong>Editorial:</strong> {{ libro.editorial }}</p>
+                  <p class="card-text">
                     <strong>Resumen:</strong>
                     <span id="resumen-corto-{{ libro.id }}">
                       {{ libro.resumen|slice:":150" }}...
@@ -93,13 +87,11 @@
                   </p>
                 </div>
               </div>
-
-              <!-- Botón reservar -->
-              <div class="col-md-2 d-flex align-items-center justify-content-center p-2">
-                <form method="get" action="{% url 'detalles_libro' %}">
+              <div class="col-md-2 d-flex align-items-center justify-content-center p-3">
+                <form method="get" action="{% url 'detalles_libro' %}" class="w-100">
                   <input type="hidden" name="libro_id" value="{{ libro.id }}">
                   <input type="hidden" name="biblioteca_url" value="{{ libro.biblioteca_url }}">
-                  <button type="submit" class="btn btn-danger btn-sm">Reservar</button>
+                  <button type="submit" class="btn btn-danger w-100">Reservar</button>
                 </form>
               </div>
             </div>
@@ -114,7 +106,6 @@
   {% endif %}
 </div>
 {% endblock %}
-
 
 {% block scripts %}
 <script>

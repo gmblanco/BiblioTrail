@@ -57,8 +57,6 @@
     </div>
   </div>
 
-  
-
   <!-- Tabla de disponibilidad -->
   <div class="table-responsive mb-4">
     <table class="table table-bordered text-center align-middle shadow-sm">
@@ -73,7 +71,15 @@
       <tbody>
         {% for espacio in espacios %}
           <tr>
-            <td class="fw-semibold text-start">{{ espacio.nombre }}</td>
+            <td class="fw-semibold text-start">
+              <a href="#"
+                 class="enlace-detalle-espacio"
+                 data-nombre="{{ espacio.nombre }}"
+                 data-ubicacion="{{ espacio.ubicacion }}"
+                 data-capacidad="{{ espacio.capacidad }}">
+                {{ espacio.nombre }}
+              </a>
+            </td>
             {% for bloque in espacio.bloques %}
               {% if bloque.disponible %}
                 <td class="reserva-celda"
@@ -112,6 +118,23 @@
   <div class="alert alert-secondary shadow-sm mt-5" role="alert">
     <i class="bi bi-info-circle me-2"></i>
     Recuerda que cada reserva es personal y no transferible. Puedes consultar y cancelar tus reservas activas desde la sección <strong>Mis Reservas</strong>.
+  </div>
+</div>
+
+<!-- Modal para detalle de espacio -->
+<div class="modal fade" id="modalEspacio" tabindex="-1" aria-labelledby="modalEspacioLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEspacioLabel">Detalle del espacio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Nombre:</strong> <span id="modal-nombre"></span></p>
+        <p><strong>Ubicación:</strong> <span id="modal-ubicacion"></span></p>
+        <p><strong>Capacidad:</strong> <span id="modal-capacidad"></span> personas</p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -158,6 +181,16 @@
     });
   });
 
+  document.querySelectorAll('.enlace-detalle-espacio').forEach(enlace => {
+    enlace.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById("modal-nombre").textContent = enlace.dataset.nombre;
+      document.getElementById("modal-ubicacion").textContent = enlace.dataset.ubicacion;
+      document.getElementById("modal-capacidad").textContent = enlace.dataset.capacidad;
+      new bootstrap.Modal(document.getElementById('modalEspacio')).show();
+    });
+  });
+
   const selectorFecha = document.getElementById("selector-fecha");
   const selectorBiblioteca = document.getElementById("selector-biblioteca");
   const btnPrev = document.getElementById("dia-anterior");
@@ -170,9 +203,7 @@
       url.searchParams.set("biblioteca", nuevaBiblioteca);
     }
 
-    // Mostrar el loader antes de cambiar de página
     document.getElementById("loader").style.display = "block";
-
     window.location.href = url.toString();
   }
 

@@ -2,32 +2,35 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-4">
-  <h1 class="text-center mb-5">Bibliotecas Conectadas</h1>
+<div class="container mt-5">
+  <div class="text-center mb-5">
+    <h1 class="fw-bold" style="color: #6595f0;">Bibliotecas Conectadas</h1>
+    <p class="text-muted mt-2">Explora las bibliotecas integradas en la red de BiblioTrail: ubicaciones, horarios y contacto.</p>
+  </div>
 
-  <div class="row">
+  <div class="row g-4">
     {% for b in bibliotecas %}
-      <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card h-100 shadow-sm border-0">
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border border-2 border-light-subtle">
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ b.nombre }}</h5>
+            <h5 class="card-title fw-semibold">{{ b.nombre }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">{{ b.nombre_sistema }}</h6>
 
-            <p class="card-text mt-2">
-              <strong>Dirección:</strong> {{ b.direccion }}<br>
-              <strong>Teléfono:</strong> {{ b.telefono }}<br>
-              <strong>Email:</strong> {{ b.email }}<br>
-              <strong>Horario:</strong> {{ b.horario|linebreaks  }}<br>
-              <strong>Total libros:</strong> {{ b.total_libros }}<br>
-              <strong>Total ejemplares:</strong> {{ b.total_ejemplares }}
-            </p>
+            <ul class="list-unstyled mt-3">
+              <li><i class="bi bi-geo-alt-fill me-2 text-primary"></i><strong>Dirección:</strong> {{ b.direccion }}</li>
+              <li><i class="bi bi-telephone-fill me-2 text-primary"></i><strong>Teléfono:</strong> {{ b.telefono }}</li>
+              <li><i class="bi bi-envelope-fill me-2 text-primary"></i><strong>Email:</strong> {{ b.email }}</li>
+              <li><i class="bi bi-clock-fill me-2 text-primary"></i><strong>Horario:</strong> <br>{{ b.horario|linebreaks }}</li>
+              <li><i class="bi bi-book-fill me-2 text-primary"></i><strong>Total libros:</strong> {{ b.total_libros }}</li>
+              <li><i class="bi bi-collection-fill me-2 text-primary"></i><strong>Total ejemplares:</strong> {{ b.total_ejemplares }}</li>
+            </ul>
 
             {% if b.latitud and b.longitud %}
-              <div class="mt-auto">
+              <div class="mt-3">
                 <iframe
                   width="100%"
                   height="200"
-                  style="border:0; border-radius: 8px;"
+                  style="border:0; border-radius: 10px;"
                   loading="lazy"
                   allowfullscreen
                   referrerpolicy="no-referrer-when-downgrade"

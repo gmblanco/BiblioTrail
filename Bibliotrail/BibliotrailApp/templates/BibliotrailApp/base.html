@@ -82,8 +82,8 @@
                         </ul>
                     </li>
                 </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Titulo, autor, ISBN..." aria-label="Search">
+                <form class="d-flex" role="search" action="{% url 'buscar-libros' %}" method="get">
+                    <input class="form-control me-2" name="q" type="search" placeholder="Título, autor..." value="{{ request.GET.q }}" aria-label="Buscar">
                     <button class="btn custom-search-btn" type="submit">Buscar</button>
                 </form>
             </div>

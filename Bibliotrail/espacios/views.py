@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from datetime import datetime, timedelta, time
 from reservas.models import ReservaEspacio
-import httpx
+import httpx, json
 
 def espacios(request):
     return render(request, "espacios/disponibilidad.html")
@@ -111,6 +111,8 @@ def disponibilidad_matriz(request):
                 espacios.append({
                     "id": espacio["id"],
                     "nombre": espacio["nombre"],
+                    "ubicacion": espacio.get("ubicacion", ""),
+                    "capacidad": espacio.get("capacidad", ""),
                     "bloques": bloques
                 })
 

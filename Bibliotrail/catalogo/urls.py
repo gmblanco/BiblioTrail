@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 urlpatterns = [
-    path('', views.catalogo,name="Catalogo"),
+    path('', views.catalogo_redirect,name="Catalogo"),
     #path('libros/', views.LibroListView.as_view(), name='libros'),
     #path('misprestamos/', views.PrestamosUsuarioListView.as_view(), name='mis-prestamos'),
     path('autor/', views.detalles_autor, name='autor'),

@@ -7,6 +7,10 @@ import requests
 import httpx
 import urllib.parse
 
+
+def catalogo_redirect(request):
+    return redirect('/catalogo/buscar/?q=&biblioteca=&genero=')
+
 def catalogo(request):
     #sesiones
     num_visitas = request.session.get('num_visitas',0)
