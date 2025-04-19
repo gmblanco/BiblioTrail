@@ -1,34 +1,42 @@
 {% extends "BibliotrailApp/base.html" %}
+
 {% block title %}
 <title>Mis reservas de espacios</title>
 {% endblock %}
 
 {% block content %}
 <div class="container my-5">
-  <h2 class="fw-bold mb-4" style="color: #6595f0;">Mis reservas de salas</h2>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold" style="color: #4a77d4;">
+      <i class="bi bi-calendar-check-fill me-2"></i>Mis reservas de salas
+    </h2>
+    <a href="{% url 'calendario_espacios' %}" class="btn btn-outline-primary">
+      <i class="bi bi-plus-circle me-1"></i>Reservar nuevo espacio
+    </a>
+  </div>
 
   {% if reservas %}
-    <div class="table-responsive">
-      <table class="table table-bordered align-middle text-center shadow-sm">
-        <thead class="table-light">
+    <div class="table-responsive rounded shadow-sm mb-4">
+      <table class="table table-hover align-middle text-center bg-white">
+        <thead class="table-primary text-dark">
           <tr>
-            <th>Espacio</th>
-            <th>Biblioteca</th>
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th>Acción</th>
+            <th scope="col"></i> Espacio</th>
+            <th scope="col"></i> Biblioteca</th>
+            <th scope="col"><i class="bi bi-calendar-event"></i> Fecha</th>
+            <th scope="col"><i class="bi bi-clock"></i> Horario</th>
+            <th scope="col"></i> Opciones</th>
           </tr>
         </thead>
         <tbody>
           {% for reserva in reservas %}
-            <tr>
-              <td>{{ reserva.titulo_espacio }}</td>
+            <tr class="align-middle">
+              <td class="fw-semibold">{{ reserva.titulo_espacio }}</td>
               <td>{{ reserva.biblioteca_origen|title }}</td>
-              <td>{{ reserva.fecha }}</td>
+              <td>{{ reserva.fecha|date:"d/m/Y" }}</td>
               <td>{{ reserva.hora_inicio|time:"H:i" }} - {{ reserva.hora_fin|time:"H:i" }}</td>
               <td>
-                <a href="{% url 'cancelar_reserva_espacio' reserva.id %}" class="btn btn-sm btn-danger">
-                  Cancelar
+                <a href="{% url 'cancelar_reserva_espacio' reserva.id %}" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-x-circle"></i> Cancelar
                 </a>
               </td>
             </tr>
@@ -37,9 +45,24 @@
       </table>
     </div>
   {% else %}
-    <div class="alert alert-info" role="alert">
-      Aún no has reservado ningún espacio.
+    <div class="alert alert-info text-center mt-4 p-4 shadow-sm" role="alert">
+      <i class="bi bi-info-circle-fill me-2"></i>Aún no has reservado ningún espacio. Puedes hacer tu primera reserva desde el botón superior derecho.
     </div>
   {% endif %}
+
+  <!-- Texto explicativo debajo -->
+  <div class="mt-5">
+    <h5 class="fw-semibold">Información importante</h5>
+    <p class="text-muted">
+      En esta sección puedes consultar todas tus reservas activas en salas de estudio u otros espacios disponibles. 
+      También puedes cancelarlas si ya no las necesitas.
+    </p>
+
+    <div class="alert alert-warning shadow-sm" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      Al realizar una reserva, te comprometes a hacer uso del espacio reservado.  
+      Si finalmente no puedes asistir, por favor cancela tu reserva con antelación para que pueda ser utilizada por otra persona.
+    </div>
+  </div>
 </div>
 {% endblock %}
