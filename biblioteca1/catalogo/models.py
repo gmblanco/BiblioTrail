@@ -210,3 +210,11 @@ class Evento(models.Model):
 
     def duracion_dias(self):
         return (self.fecha_fin.date() - self.fecha_inicio.date()).days + 1
+
+class Espacio(models.Model):
+    nombre = models.CharField(max_length=100)
+    ubicacion = models.CharField(max_length=200)
+    capacidad = models.IntegerField()
+
+    def __str__(self):
+        return f'{self.nombre} - {self.ubicacion}'

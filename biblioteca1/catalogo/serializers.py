@@ -39,3 +39,8 @@ class EventoSerializer(ModelSerializer):
     class Meta:
         model = Evento
         fields = '__all__'
+
+class EspacioSerializer(ModelSerializer):
+    class Meta:
+        model = Espacio
+        fields = '__all__'

@@ -164,7 +164,9 @@ MESSAGE_TAGS={
     mensajes_error.WARNING : 'warning',
     mensajes_error.ERROR : 'danger',
 }
-
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+]
 CORS_ALLOW_ALL_ORIGINS = True
 
 LOGIN_URL = '/autenticacion/iniciar_sesion/'

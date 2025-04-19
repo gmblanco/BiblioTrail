@@ -1,0 +1,205 @@
+{% extends "BibliotrailApp/base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Reserva de espacios</title>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+    <div>
+      <h2 class="fw-bold mb-3" style="color: #6595f0;">Reserva de espacios por franja horaria</h2>
+      <p class="text-muted">Accede a la disponibilidad de los espacios en tu biblioteca seleccionada y reserva una franja horaria con un solo clic. Esta herramienta está pensada para facilitar la organización del estudio, reuniones o actividades en salas comunes.</p>
+    </div>
+    <i class="bi bi-grid-3x3-gap-fill fs-3 text-info"></i>
+  </div>
+
+  <!-- Formulario oculto para CSRF -->
+  <form id="csrf-form">{% csrf_token %}</form>
+
+  <!-- Loader de carga -->
+  <div id="loader" class="text-center my-4" style="display: none;">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+      <span class="visually-hidden">Cargando disponibilidad...</span>
+    </div>
+    <p class="mt-2 text-muted">Cargando disponibilidad...</p>
+  </div>
+
+  <!-- Controles de fecha y biblioteca -->
+  <div class="row align-items-center mb-4 g-2">
+    <div class="col-auto">
+      <button id="dia-anterior" class="btn btn-outline-secondary">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+    </div>
+    <div class="col-auto">
+      <strong id="fecha-mostrada">
+        {{ fecha|date:"l, j \\d\\e F \\d\\e Y" }}
+      </strong>
+    </div>
+    <div class="col-auto">
+      <button id="dia-siguiente" class="btn btn-outline-secondary">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+    <div class="col-auto">
+      <input type="date" id="selector-fecha" class="form-control" value="{{ fecha|date:'Y-m-d' }}">
+    </div>
+    <div class="col-auto">
+      <select id="selector-biblioteca" class="form-select">
+        {% for clave, url in bibliotecas.items %}
+          <option value="{{ clave }}" {% if clave == biblioteca %}selected{% endif %}>
+            {{ clave|title }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  
+
+  <!-- Tabla de disponibilidad -->
+  <div class="table-responsive mb-4">
+    <table class="table table-bordered text-center align-middle shadow-sm">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">Espacio</th>
+          {% for hora in horas %}
+            <th scope="col">{{ hora }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for espacio in espacios %}
+          <tr>
+            <td class="fw-semibold text-start">{{ espacio.nombre }}</td>
+            {% for bloque in espacio.bloques %}
+              {% if bloque.disponible %}
+                <td class="reserva-celda"
+                    role="button"
+                    tabindex="0"
+                    style="cursor:pointer; background-color: #74d774;"
+                    data-espacio-id="{{ espacio.id }}"
+                    data-espacio-nombre="{{ espacio.nombre }}"
+                    data-inicio="{{ bloque.hora_inicio }}"
+                    data-fin="{{ bloque.hora_fin }}">
+                  &nbsp;
+                </td>
+              {% else %}
+                <td style="background-color: #dc3545;">
+                  &nbsp;
+                </td>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Leyenda -->
+  <div class="mt-4">
+    <h6 class="fw-bold">Estado de las reservas:</h6>
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+      <div style="width: 20px; height: 20px; border-radius: 4px; background-color: #74d774;"></div>
+      <span>Disponible</span>
+      <div class="ms-4" style="width: 20px; height: 20px; border-radius: 4px; background-color: #dc3545;"></div>
+      <span>Ocupado</span>
+    </div>
+  </div>
+
+  <div class="alert alert-secondary shadow-sm mt-5" role="alert">
+    <i class="bi bi-info-circle me-2"></i>
+    Recuerda que cada reserva es personal y no transferible. Puedes consultar y cancelar tus reservas activas desde la sección <strong>Mis Reservas</strong>.
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+  function getCSRFToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+  }
+
+  document.querySelectorAll('.reserva-celda').forEach(celda => {
+    celda.addEventListener('click', async () => {
+      const espacioId = celda.dataset.espacioId;
+      const espacioNombre = celda.dataset.espacioNombre;
+      const horaInicio = celda.dataset.inicio;
+      const horaFin = celda.dataset.fin;
+      const fecha = document.getElementById("selector-fecha").value;
+      const biblioteca = document.getElementById("selector-biblioteca").value;
+
+      if (confirm(`¿Deseas reservar "${espacioNombre}" de ${horaInicio} a ${horaFin} en ${fecha}?`)) {
+        const response = await fetch("/reservas/api/reservar/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken(),
+          },
+          body: JSON.stringify({
+            espacio_id: espacioId,
+            titulo: espacioNombre,
+            biblioteca: biblioteca,
+            fecha: fecha,
+            hora_inicio: horaInicio,
+            hora_fin: horaFin
+          })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert("Reserva realizada correctamente.");
+          location.reload();
+        } else {
+          alert("Error al realizar la reserva: " + (data.error || "Inténtalo de nuevo."));
+        }
+      }
+    });
+  });
+
+  const selectorFecha = document.getElementById("selector-fecha");
+  const selectorBiblioteca = document.getElementById("selector-biblioteca");
+  const btnPrev = document.getElementById("dia-anterior");
+  const btnNext = document.getElementById("dia-siguiente");
+
+  function cambiarFechaYBiblioteca(nuevaFecha, nuevaBiblioteca) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("fecha", nuevaFecha);
+    if (nuevaBiblioteca) {
+      url.searchParams.set("biblioteca", nuevaBiblioteca);
+    }
+
+    // Mostrar el loader antes de cambiar de página
+    document.getElementById("loader").style.display = "block";
+
+    window.location.href = url.toString();
+  }
+
+  selectorFecha?.addEventListener("change", () => {
+    if (selectorFecha.value) {
+      cambiarFechaYBiblioteca(selectorFecha.value, selectorBiblioteca.value);
+    }
+  });
+
+  selectorBiblioteca?.addEventListener("change", () => {
+    if (selectorBiblioteca.value) {
+      cambiarFechaYBiblioteca(selectorFecha.value, selectorBiblioteca.value);
+    }
+  });
+
+  btnPrev?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const fechaActual = new Date(selectorFecha.value);
+    fechaActual.setDate(fechaActual.getDate() - 1);
+    cambiarFechaYBiblioteca(fechaActual.toISOString().slice(0, 10), selectorBiblioteca.value);
+  });
+
+  btnNext?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const fechaActual = new Date(selectorFecha.value);
+    fechaActual.setDate(fechaActual.getDate() + 1);
+    cambiarFechaYBiblioteca(fechaActual.toISOString().slice(0, 10), selectorBiblioteca.value);
+  });
+</script>
+{% endblock %}

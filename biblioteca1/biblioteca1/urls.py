@@ -15,6 +15,8 @@ urlpatterns = [
     path('api/info/', BibliotecaInfoAPIView.as_view(), name='api-info-biblioteca'),
     path('api/eventos/', EventoListAPIView.as_view(), name='api-eventos'),
     path('api/eventos/<int:pk>/', EventoDetalleAPIView.as_view(), name='evento-detalle'),
+    path('api/espacios/', EspacioListAPIView.as_view(), name='api-espacios'),
+    path('api/espacios/<int:pk>/', EventoDetalleAPIView.as_view(), name='espacio-detalle'),
 ]
 
 if settings.DEBUG:
