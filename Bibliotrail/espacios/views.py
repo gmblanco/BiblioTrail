@@ -1,3 +1,5 @@
+import httpx, json
+import asyncio
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from catalogo.views import cargar_bibliotecas
@@ -5,7 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from datetime import datetime, timedelta, time
 from reservas.models import ReservaEspacio
-import httpx, json
+from asgiref.sync import sync_to_async
+
 
 def espacios(request):
     return render(request, "espacios/disponibilidad.html")
@@ -53,7 +56,9 @@ def disponibilidad_matriz(request):
     bibliotecas = cargar_bibliotecas()
     biblioteca = request.GET.get("biblioteca", "")
     fecha_str = request.GET.get("fecha")
+    capacidad_minima = int(request.GET.get("capacidad_minima", 0))
 
+    # Procesar la fecha
     if fecha_str:
         try:
             fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
@@ -62,15 +67,7 @@ def disponibilidad_matriz(request):
     else:
         fecha = datetime.today().date()
 
-    if not biblioteca and bibliotecas:
-        biblioteca = list(bibliotecas.keys())[0]
-
-    base_urls = bibliotecas
-    base_url = base_urls.get(biblioteca)
-    if base_url and not base_url.startswith("http"):
-        base_url = f"http://{base_url}"
-
-    # 1. Generar franjas horarias
+    # Generar lista de horas
     hora_actual = time(8, 0)
     fin = time(21, 0)
     delta = timedelta(minutes=30)
@@ -80,26 +77,52 @@ def disponibilidad_matriz(request):
         horas.append(hora_actual.strftime("%H:%M"))
         hora_actual = (datetime.combine(fecha, hora_actual) + delta).time()
 
+    # Cargar espacios
     espacios = []
+    if biblioteca == "todas":
+        for clave, base_url in bibliotecas.items():
+            if not base_url.startswith("http"):
+                base_url = f"http://{base_url}"
+            espacios += cargar_espacios(clave, base_url, fecha, horas, capacidad_minima)
+    else:
+        base_url = bibliotecas.get(biblioteca, "")
+        if not base_url.startswith("http"):
+            base_url = f"http://{base_url}"
+        espacios += cargar_espacios(biblioteca, base_url, fecha, horas, capacidad_minima)
 
+    return render(request, "espacios/disponibilidad.html", {
+        "bibliotecas": bibliotecas,
+        "biblioteca": biblioteca,
+        "fecha": fecha,
+        "horas": horas,
+        "espacios": espacios
+    })
+
+
+def cargar_espacios(biblioteca_id, base_url, fecha, horas, capacidad_minima):
+    espacios = []
     try:
-        # 2. Obtener lista de espacios desde API externa
         r = httpx.get(f"{base_url}/api/espacios/", timeout=10.0)
+        r_dispo = httpx.get(
+            f"http://localhost:8000/espacios/api/disponibilidad-general/?biblioteca={biblioteca_id}&fecha={fecha}",
+            timeout=10.0
+        )
+
         if r.status_code == 200:
             lista_espacios = r.json()
-
-            # 3. Obtener disponibilidad local (una sola llamada)
-            r_dispo = httpx.get(f"http://localhost:8000/espacios/api/disponibilidad-general/?biblioteca={biblioteca}&fecha={fecha}", timeout=10.0)
             reservas_por_espacio = r_dispo.json() if r_dispo.status_code == 200 else {}
 
             for espacio in lista_espacios:
-                espacio_id = str(espacio['id'])  # Las claves del JSON son strings
-                reservas = reservas_por_espacio.get(espacio_id, [])
+                if espacio.get("capacidad", 0) < capacidad_minima:
+                    continue
 
+                espacio_id = str(espacio["id"])
+                reservas = reservas_por_espacio.get(espacio_id, [])
                 bloques = []
+
                 for hora_str in horas:
                     inicio = datetime.strptime(hora_str, "%H:%M").time()
-                    fin_bloque = (datetime.combine(fecha, inicio) + delta).time()
+                    fin_bloque = (datetime.combine(fecha, inicio) + timedelta(minutes=30)).time()
 
                     ocupado = any(
                         datetime.strptime(r[0], "%H:%M:%S").time() < fin_bloque and
@@ -118,19 +141,12 @@ def disponibilidad_matriz(request):
                     "nombre": espacio["nombre"],
                     "ubicacion": espacio.get("ubicacion", ""),
                     "capacidad": espacio.get("capacidad", ""),
-                    "bloques": bloques
+                    "bloques": bloques,
+                    "biblioteca": biblioteca_id  # para mostrar en la tabla
                 })
-
     except httpx.RequestError as e:
-        print("Error al cargar espacios o disponibilidad:", e)
-
-    return render(request, "espacios/disponibilidad.html", {
-        "bibliotecas": bibliotecas,
-        "biblioteca": biblioteca,
-        "fecha": fecha,
-        "horas": horas,
-        "espacios": espacios
-    })
+        print(f"Error al consultar {biblioteca_id}: {e}")
+    return espacios
 
 from django.http import JsonResponse
 

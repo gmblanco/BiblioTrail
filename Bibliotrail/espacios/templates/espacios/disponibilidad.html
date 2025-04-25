@@ -10,58 +10,41 @@
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
     <div>
       <h2 class="fw-bold mb-3" style="color: #6595f0;">Reserva de espacios por franja horaria</h2>
-      <p class="text-muted">Accede a la disponibilidad de los espacios en tu biblioteca seleccionada y reserva una franja horaria con un solo clic. Esta herramienta está pensada para facilitar la organización del estudio, reuniones o actividades en salas comunes.</p>
+      <p class="text-muted">Consulta la disponibilidad de espacios en una biblioteca específica y filtra por fecha y capacidad.</p>
     </div>
     <i class="bi bi-grid-3x3-gap-fill fs-3 text-info"></i>
   </div>
 
-  <!-- Formulario oculto para CSRF -->
-  <form id="csrf-form">{% csrf_token %}</form>
-
-  <!-- Loader de carga -->
-  <div id="loader" class="text-center my-4" style="display: none;">
-    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-      <span class="visually-hidden">Cargando disponibilidad...</span>
-    </div>
-    <p class="mt-2 text-muted">Cargando disponibilidad...</p>
-  </div>
-
-  <!-- Controles de fecha y biblioteca -->
-  <div class="row align-items-center mb-4 g-2">
-    <div class="col-auto">
-      <button id="dia-anterior" class="btn btn-outline-secondary">
-        <i class="bi bi-chevron-left"></i>
-      </button>
-    </div>
-    <div class="col-auto">
-      <strong id="fecha-mostrada">
-        {{ fecha|date:"l, j \\d\\e F \\d\\e Y" }}
-      </strong>
-    </div>
-    <div class="col-auto">
-      <button id="dia-siguiente" class="btn btn-outline-secondary">
-        <i class="bi bi-chevron-right"></i>
-      </button>
-    </div>
-    <div class="col-auto">
-      <input type="date" id="selector-fecha" class="form-control" value="{{ fecha|date:'Y-m-d' }}">
-    </div>
-    <div class="col-auto">
-      <select id="selector-biblioteca" class="form-select">
+  <!-- Formulario de búsqueda -->
+  <form id="form-busqueda" class="row g-3 align-items-end mb-4">
+    <div class="col-md-4">
+      <label for="selector-biblioteca" class="form-label">Biblioteca</label>
+      <select id="selector-biblioteca" name="biblioteca" class="form-select" required>
+        <option value="todas" {% if biblioteca == "todas" %}selected{% endif %}>Todas las bibliotecas</option>
         {% for clave, url in bibliotecas.items %}
-          <option value="{{ clave }}" {% if clave == biblioteca %}selected{% endif %}>
-            {{ clave|title }}
-          </option>
+          <option value="{{ clave }}" {% if clave == biblioteca %}selected{% endif %}>{{ clave|title }}</option>
         {% endfor %}
       </select>
     </div>
-  </div>
+    <div class="col-md-3">
+      <label for="capacidad-minima" class="form-label">Capacidad mínima</label>
+      <input type="number" id="capacidad-minima" name="capacidad_minima" class="form-control" value="{{ request.GET.capacidad_minima }}">
+    </div>
+    <div class="col-md-3">
+      <label for="selector-fecha" class="form-label">Fecha</label>
+      <input type="date" id="selector-fecha" name="fecha" class="form-control" value="{{ fecha|date:'Y-m-d' }}">
+    </div>
+    <div class="col-md-2 d-grid">
+      <button type="submit" class="btn btn-primary">Buscar disponibilidad</button>
+    </div>
+  </form>
 
   <!-- Tabla de disponibilidad -->
   <div class="table-responsive mb-4">
     <table class="table table-bordered text-center align-middle shadow-sm">
       <thead class="table-light">
         <tr>
+          <th scope="col">Biblioteca</th>
           <th scope="col">Espacio</th>
           {% for hora in horas %}
             <th scope="col">{{ hora }}</th>
@@ -71,6 +54,7 @@
       <tbody>
         {% for espacio in espacios %}
           <tr>
+            <td class="text-muted small">{{ espacio.biblioteca|title }}</td>
             <td class="fw-semibold text-start">
               <a href="#"
                  class="enlace-detalle-espacio"
@@ -121,7 +105,7 @@
   </div>
 </div>
 
-<!-- Modal para detalle de espacio -->
+<!-- Modal -->
 <div class="modal fade" id="modalEspacio" tabindex="-1" aria-labelledby="modalEspacioLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -191,46 +175,27 @@
     });
   });
 
-  const selectorFecha = document.getElementById("selector-fecha");
-  const selectorBiblioteca = document.getElementById("selector-biblioteca");
-  const btnPrev = document.getElementById("dia-anterior");
-  const btnNext = document.getElementById("dia-siguiente");
+  document.getElementById("form-busqueda").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const biblioteca = document.getElementById("selector-biblioteca").value;
+    const capacidad = document.getElementById("capacidad-minima").value;
+    const fecha = document.getElementById("selector-fecha").value;
 
-  function cambiarFechaYBiblioteca(nuevaFecha, nuevaBiblioteca) {
+    if (!biblioteca) {
+      alert("Por favor, selecciona una biblioteca.");
+      return;
+    }
+
     const url = new URL(window.location.href);
-    url.searchParams.set("fecha", nuevaFecha);
-    if (nuevaBiblioteca) {
-      url.searchParams.set("biblioteca", nuevaBiblioteca);
+    url.searchParams.set("biblioteca", biblioteca);
+    url.searchParams.set("fecha", fecha);
+    if (capacidad) {
+      url.searchParams.set("capacidad_minima", capacidad);
+    } else {
+      url.searchParams.delete("capacidad_minima");
     }
 
-    document.getElementById("loader").style.display = "block";
     window.location.href = url.toString();
-  }
-
-  selectorFecha?.addEventListener("change", () => {
-    if (selectorFecha.value) {
-      cambiarFechaYBiblioteca(selectorFecha.value, selectorBiblioteca.value);
-    }
-  });
-
-  selectorBiblioteca?.addEventListener("change", () => {
-    if (selectorBiblioteca.value) {
-      cambiarFechaYBiblioteca(selectorFecha.value, selectorBiblioteca.value);
-    }
-  });
-
-  btnPrev?.addEventListener("click", (e) => {
-    e.preventDefault();
-    const fechaActual = new Date(selectorFecha.value);
-    fechaActual.setDate(fechaActual.getDate() - 1);
-    cambiarFechaYBiblioteca(fechaActual.toISOString().slice(0, 10), selectorBiblioteca.value);
-  });
-
-  btnNext?.addEventListener("click", (e) => {
-    e.preventDefault();
-    const fechaActual = new Date(selectorFecha.value);
-    fechaActual.setDate(fechaActual.getDate() + 1);
-    cambiarFechaYBiblioteca(fechaActual.toISOString().slice(0, 10), selectorBiblioteca.value);
   });
 </script>
 {% endblock %}
