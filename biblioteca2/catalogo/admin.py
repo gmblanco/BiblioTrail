@@ -84,3 +84,9 @@ class EventoAdmin(admin.ModelAdmin):
     def plazas_disponibles(self, obj):
         return obj.plazas_disponibles()
     plazas_disponibles.short_description = 'Plazas disponibles'
+
+@admin.register(Espacio)
+class EspacioAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'ubicacion', 'capacidad')
+    list_filter = ('ubicacion',) 
+    search_fields = ('nombre', 'ubicacion')

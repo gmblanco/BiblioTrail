@@ -1,14 +1,14 @@
 from rest_framework import generics
-from .models import Libro
+from .models import *
 from .serializers import *
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.generics import RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from .filters import LibroFilter
+from .filters import *
+from .serializers import *
 
 class LibroListAPIView(generics.ListAPIView):
     queryset = Libro.objects.all()
@@ -28,12 +28,12 @@ class EventoListAPIView(generics.ListAPIView):
     filter_backends = [SearchFilter]
     search_fields = ['titulo', 'descripcion']
 
-from rest_framework.generics import RetrieveAPIView
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Evento
-from .serializers import EventoSerializer
-from django.shortcuts import get_object_or_404
+
+class EspacioListAPIView(generics.ListAPIView):
+    queryset = Espacio.objects.all()
+    serializer_class = EspacioSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['nombre', 'ubicacion']
 
 class EventoDetalleAPIView(APIView):
     def get(self, request, pk):
@@ -64,8 +64,6 @@ class EventoDetalleAPIView(APIView):
 
 
         return Response({"error": "Petición inválida"}, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 class EjemplaresDisponiblesAPIView(generics.ListAPIView):
     serializer_class = EjemplarSerializer
@@ -119,3 +117,4 @@ class BibliotecaInfoAPIView(APIView):
         data["total_libros"] = Libro.objects.count()
         data["total_ejemplares"] = EjemplarLibro.objects.count()
         return Response(data)
+
