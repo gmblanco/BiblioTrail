@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'corsheaders',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -150,3 +151,8 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
 ]
+
+GRAPH_MODELS = {
+    "all_applications": True,
+    "group_models": True,
+}

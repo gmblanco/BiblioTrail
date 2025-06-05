@@ -29,7 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    '127.0.0.2',  # Agregar la dirección IP donde corre la API
+    '127.0.0.2',  
     'localhost',
 ]
 
@@ -181,3 +181,8 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_ALL_ORIGINS = True
 
 LOGIN_URL = '/autenticacion/iniciar_sesion/'
+
+GRAPH_MODELS = {
+    "all_applications": True,
+    "group_models": True,
+}
