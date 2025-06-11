@@ -74,9 +74,11 @@
                     data-espacio-nombre="{{ espacio.nombre }}"
                     data-inicio="{{ bloque.hora_inicio }}"
                     data-fin="{{ bloque.hora_fin }}"
+                    data-biblioteca="{{ espacio.biblioteca }}"  
                     title="Disponible">
                   &nbsp;
                 </td>
+
               {% else %}
                 <td style="background-color: #dc3545; cursor: not-allowed;" title="No disponible">
                   &nbsp;
@@ -138,7 +140,7 @@
       const horaInicio = celda.dataset.inicio;
       const horaFin = celda.dataset.fin;
       const fecha = document.getElementById("selector-fecha").value;
-      const biblioteca = document.getElementById("selector-biblioteca").value;
+      const biblioteca = celda.dataset.biblioteca;
 
       if (confirm(`¿Deseas reservar "${espacioNombre}" de ${horaInicio} a ${horaFin} en ${fecha}?`)) {
         const response = await fetch("/reservas/api/reservar/", {

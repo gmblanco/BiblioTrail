@@ -1,6 +1,64 @@
 {% extends "BibliotrailApp/base.html" %}
 {% load static %}
+
 {% block content %}
+<div class="container py-5">
 
+    <!-- Título principal -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold" style="color: #4a77d4;">Gestionar mis reservas</h1>
+        <p class="text-muted fs-5">Consulta y gestiona todos tus préstamos, inscripciones y reservas de espacios de trabajo desde un único lugar.</p>
+    </div>
 
+    <!-- Tarjetas de navegación -->
+    <div class="row justify-content-center gy-4">
+
+        <!-- Mis Préstamos -->
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+            <a href="{% url 'mis_prestamos' %}" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100" style="transition: transform 0.3s;">
+                    <img src="{% static 'images/prestamos.jpg' %}" class="card-img-top" alt="Mis Préstamos" style="height: 250px; object-fit: cover;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-semibold text-dark">Mis Préstamos</h5>
+                        <p class="card-text text-muted">Consulta tus libros prestados y su estado.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Mis Eventos -->
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+            <a href="{% url 'mis_inscripciones' %}" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100" style="transition: transform 0.3s;">
+                    <img src="{% static 'images/eventos.jpg' %}" class="card-img-top" alt="Mis Eventos" style="height: 250px; object-fit: cover;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-semibold text-dark">Mis Eventos</h5>
+                        <p class="card-text text-muted">Gestiona tus inscripciones a eventos y actividades.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Mis Espacios -->
+        <div class="col-12 col-md-4 d-flex justify-content-center">
+            <a href="{% url 'mis_espacios' %}" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100" style="transition: transform 0.3s;">
+                    <img src="{% static 'images/espacios.jpg' %}" class="card-img-top" alt="Mis Espacios" style="height: 250px; object-fit: cover;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-semibold text-dark">Mis Espacios</h5>
+                        <p class="card-text text-muted">Consulta y gestiona tus reservas de salas y espacios de trabajo.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    .card:hover {
+        transform: scale(1.05);
+    }
+</style>
 {% endblock %}

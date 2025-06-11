@@ -56,6 +56,10 @@ class PrestamoUsuario(models.Model):
         if not self.fecha_limite and not self.fecha_devolucion:
             self.fecha_limite = self.fecha_prestamo + timedelta(days=15)
 
+        # Si tiene fecha_devolucion, marcar como devuelto
+        if self.fecha_devolucion and self.estado != 'd':
+            self.estado = 'd'
+
         # Si sigue activo y ya pasó la fecha límite, cambiar a 'retrasado'
         if self.estado == 'a' and self.fecha_limite:
             fecha_limite = self.fecha_limite
@@ -63,7 +67,6 @@ class PrestamoUsuario(models.Model):
                 fecha_limite = fecha_limite.date()
             if timezone.localdate() > fecha_limite:
                 self.estado = 'r'
-
 
         super().save(*args, **kwargs)
 
@@ -91,4 +94,5 @@ class PrestamoUsuario(models.Model):
                     print(f"Error al conectar con la biblioteca externa: {e}")
             else:
                 print(f"⚠ No se encontró la URL base para: {self.biblioteca_origen}")
+
 

@@ -10,6 +10,10 @@ from django.shortcuts import get_object_or_404
 from .filters import *
 from .serializers import *
 
+class GeneroListAPIView(generics.ListAPIView):
+    queryset = Genero.objects.all()
+    serializer_class = GeneroSerializer
+    
 class LibroListAPIView(generics.ListAPIView):
     queryset = Libro.objects.all()
     serializer_class = LibroSerializer

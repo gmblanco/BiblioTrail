@@ -11,6 +11,7 @@ from catalogo.views import cargar_bibliotecas
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from datetime import datetime, timedelta, time
+from django.utils.timezone import now
 from .models import ReservaEspacio
 import httpx
 from django.utils.safestring import mark_safe
@@ -60,31 +61,46 @@ def reservas(request):
 @login_required
 def mis_prestamos(request):
     usuario = request.user.perfil
+
+    # Actualizamos el estado de préstamos vencidos
+    PrestamoUsuario.objects.filter(
+        usuario=usuario,
+        estado='a',
+        fecha_limite__lt=now().date()
+    ).update(estado='r')
+
+    # Ahora ya traemos los préstamos según su estado actualizado
     prestamos_qs = PrestamoUsuario.objects.filter(usuario=usuario, estado__in=['a', 'r'])
 
     prestamos_activos = []
+    prestamos_retrasados = []
+
     for prestamo in prestamos_qs:
         libro = obtener_datos_libro(prestamo)
-        if libro:
-            prestamos_activos.append({
-                "id": prestamo.id,
-                "titulo_libro": libro.get("titulo", prestamo.titulo_libro),
-                "fecha_prestamo": prestamo.fecha_prestamo,
-                "fecha_limite": prestamo.fecha_limite,
-                "estado": prestamo.estado,
-                "portada": libro.get("portada"),
-                "autor": libro.get("autor"),
-                "editorial": libro.get("editorial"),
-                "resumen": libro.get("resumen"),
-                "isbn": libro.get("isbn"),
-                "libro_id": libro.get("id"),
-                "biblioteca_url": libro.get("biblioteca_url"),
-            })
+        datos_prestamo = {
+            "id": prestamo.id,
+            "titulo_libro": libro.get("titulo", prestamo.titulo_libro),
+            "fecha_prestamo": prestamo.fecha_prestamo,
+            "fecha_limite": prestamo.fecha_limite,
+            "estado": prestamo.estado,
+            "portada": libro.get("portada"),
+            "autor": libro.get("autor"),
+            "editorial": libro.get("editorial"),
+            "resumen": libro.get("resumen"),
+            "isbn": libro.get("isbn"),
+            "libro_id": libro.get("id"),
+            "biblioteca_url": libro.get("biblioteca_url"),
+        }
+        if prestamo.estado == 'r':
+            prestamos_retrasados.append(datos_prestamo)
+        else:
+            prestamos_activos.append(datos_prestamo)
 
     prestamos_devueltos = PrestamoUsuario.objects.filter(usuario=usuario, estado='d')
 
     return render(request, "reservas/mis_prestamos.html", {
         "prestamos_activos": prestamos_activos,
+        "prestamos_retrasados": prestamos_retrasados,
         "prestamos_devueltos": prestamos_devueltos,
     })
 

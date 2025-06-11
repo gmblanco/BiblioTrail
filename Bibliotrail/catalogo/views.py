@@ -75,12 +75,16 @@ def buscar_libros(request):
 
         except httpx.RequestError:
             pass
+    
+    generos_disponibles = obtener_generos()
+
     return render(request, 'catalogo/catalogo.html', {
         'resultados': resultados,
         'query': query,
         'biblioteca': biblioteca,
         'genero': genero,
-        'bibliotecas': bibliotecas,  # Pasamos todo el diccionario
+        'bibliotecas': bibliotecas, 
+        'generos_disponibles' : generos_disponibles,
     })
 
 from django.shortcuts import render
@@ -208,4 +212,22 @@ def prestar_ejemplar(request, ejemplar_id):
             messages.error(request, "No se pudo obtener el ejemplar.")
 
         return redirect("Catalogo")
-    
+
+def obtener_generos():
+    bibliotecas = cargar_bibliotecas()
+    generos_set = set()
+
+    for nombre, url in bibliotecas.items():
+        if not url.startswith("http"):
+            url = f"http://{url}"
+
+        try:
+            response = httpx.get(f"{url}/api/generos/", timeout=10.0)
+            if response.status_code == 200:
+                lista_generos = response.json()
+                for genero in lista_generos:
+                    generos_set.add(genero["nombre"])
+        except httpx.RequestError as e:
+            print(f"Error consultando géneros en {nombre}: {e}")
+
+    return sorted(generos_set)
