@@ -8,7 +8,7 @@
 > Grade: *9.5/10*
 ---
 
-## 🧠 Project Overview
+##  Project Overview
 
 **BiblioTrail** is a web application designed to modernize and unify library management.  
 The platform allows centralized access to multiple independent libraries through a single environment, maintaining their autonomy while ensuring effective communication between systems via **REST APIs** and **HTTP requests**.
@@ -23,7 +23,7 @@ This project aims to **improve user experience**, **simplify administrative work
 
 ---
 
-## 🏗️ System Architecture
+##  System Architecture
 
 BiblioTrail is structured as a **distributed, modular system** composed of three independent Django projects:
 1. **Central Aggregator Platform (Bibliotrail)** – integrates data and provides a unified web interface  
@@ -45,20 +45,20 @@ APIs      →  REST endpoints (JSON over HTTP)
 
 ---
 
-## 💡 Key Features
+##  Key Features
 
-- 🔍 **Centralized Search:** Unified access to the catalogs of multiple independent libraries.  
-- 📚 **Book Management:** Search, borrow, and return books from a single interface.  
-- 🧾 **Event Registration:** Register and manage participation in library events.  
-- 🏠 **Room Reservation:** Book study or meeting rooms directly through the platform.  
-- 👥 **User Roles:** Different permissions for users, librarians, and administrators.  
-- 🔐 **Security:** Authentication, session management, and permission-based access.  
-- 📱 **Responsive Design:** Optimized layout for desktop, tablet, and mobile devices.  
-- ⚙️ **Modular Architecture:** Scalable system designed to integrate new libraries easily.  
+-  **Centralized Search:** Unified access to the catalogs of multiple independent libraries.  
+-  **Book Management:** Search, borrow, and return books from a single interface.  
+-  **Event Registration:** Register and manage participation in library events.  
+-  **Room Reservation:** Book study or meeting rooms directly through the platform.  
+-  **User Roles:** Different permissions for users, librarians, and administrators.  
+-  **Security:** Authentication, session management, and permission-based access.  
+-  **Responsive Design:** Optimized layout for desktop, tablet, and mobile devices.  
+-  **Modular Architecture:** Scalable system designed to integrate new libraries easily.  
 
 ---
 
-## ⚙️ Technologies Used
+##  Technologies Used
 
 | Layer | Technologies |
 |--------|---------------|
@@ -71,7 +71,7 @@ APIs      →  REST endpoints (JSON over HTTP)
 
 ---
 
-## 📊 Results
+##  Results
 
 The development of **BiblioTrail** successfully met all the objectives defined at the beginning of the project.
 
@@ -86,7 +86,7 @@ Testing confirmed the correct operation of each module, including search, reserv
 
 ---
 
-## 🎯 Conclusions
+##  Conclusions
 
 **BiblioTrail** provides an efficient, modular, and scalable solution for library management, enabling unified access to services while respecting the autonomy of each institution.  
 The system demonstrates how distributed architectures and REST-based communication can modernize traditional library systems without requiring changes to their internal logic.
