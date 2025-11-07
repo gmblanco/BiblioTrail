@@ -98,5 +98,7 @@ The system demonstrates how distributed architectures and REST-based communicati
 - The project highlights the importance of interoperability between independent systems.
 
 To conclude, **BiblioTrail** achieves its goal of centralizing access to independent library systems, improving efficiency and accessibility for users, librarians, and academic institutions alike.
+For more informatio 📘 [Read the full TFG report (PDF)](https://repositorio.comillas.edu/jspui/handle/11531/95211)
+
 
 
